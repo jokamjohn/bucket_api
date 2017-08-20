@@ -1,8 +1,8 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from app.auth.views import auth
+from flask_bcrypt import Bcrypt
 
 # Initialize application
 app = Flask(__name__)
@@ -14,11 +14,11 @@ app_settings = os.getenv(
 )
 app.config.from_object(app_settings)
 
+# Initialize Bcrypt
+bcrypt = Bcrypt(app)
+
 # Initialize Flask Sql Alchemy
 db = SQLAlchemy(app)
-
-# Initialize Flask Migrate
-migrate = Migrate(app, db)
 
 # Register blue prints
 app.register_blueprint(auth)

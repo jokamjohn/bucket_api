@@ -9,8 +9,10 @@ class BaseConfig:
     """
     Base application configuration
     """
-    SECRET_KEY = os.getenv('SECRET_KEY', 'my_strong_key')
     DEBUG = False
+    SECRET_KEY = os.getenv('SECRET_KEY', 'my_strong_key')
+    BCRYPT_HASH_PREFIX = 14
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(BaseConfig):
@@ -19,6 +21,7 @@ class DevelopmentConfig(BaseConfig):
     """
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = postgres_local_base + database_name
+    BCRYPT_HASH_PREFIX = 4
 
 
 class TestingConfig(BaseConfig):
@@ -28,3 +31,4 @@ class TestingConfig(BaseConfig):
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = postgres_local_base + database_name + "_test"
+    BCRYPT_HASH_PREFIX = 4
