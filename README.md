@@ -48,3 +48,32 @@ response below is returned. With an auth token
     "status": "success"
 }
 ```
+
+### User Login
+The user is able to login by send sending a `POST` request to
+`auth/login` with the json payload below.
+```
+{
+  "email": "example@gmail.com",
+  "password": "123456"
+}
+```
+
+If the request is successful the following response is returned:
+```
+{
+    "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDM0OTIzMzQsImlhdCI6MTUwMzQwNTkyNCwic3ViIjo1fQ.dRDTIP93WNRNv5Q7vCLLHuZfwvH5ze2B_VdRm6qHJbU",
+    "message": "Successfully logged In",
+    "status": "success"
+}
+```
+
+Otherwise if the email is invalid, user with the email does not exist or
+the password length is incorrect or less than four characters, the
+following response is returned.
+```
+{
+    "message": "Missing or wrong email format or password is less than four characters",
+    "status": "failed"
+}
+```
