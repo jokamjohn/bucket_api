@@ -150,7 +150,7 @@ class TestAuthBluePrint(BaseTestCase):
         with self.client:
             login_data = self.register_and_login_in_user()
             # Pause for 10 seconds
-            time.sleep(8)
+            time.sleep(25)
             # Logout user
             logout_response = self.logout_user(login_data['auth_token'])
             logout_data = json.loads(logout_response.data.decode())

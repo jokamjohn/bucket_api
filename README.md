@@ -77,3 +77,48 @@ following response is returned.
     "status": "failed"
 }
 ```
+
+### User Logout
+The api also enables a user to logout. The `auth/logout` endpoint
+provides this functionality.
+The `POST` request to the endpoint must have an `Authorization`
+header containing the auth token, otherwise the user wont be logged out.
+
+Example of the Authorization header
+```
+Authorization Bearer <token>
+```
+
+If the operation is successful, the response below will be returned.
+```
+{
+    "message": "Successfully logged out",
+    "status": "success"
+}
+```
+
+If the token has expired this will be returned.
+
+```
+{
+    "message": "Signature expired, Please sign in again",
+    "status": "failed"
+}
+```
+
+For an invalid token
+```
+{
+    "message": "Invalid token. Please sign in again",
+    "status": "failed"
+}
+
+```
+
+Without an Authorization header
+```
+{
+    "message": "Provide an authorization header",
+    "status": "failed"
+}
+```
