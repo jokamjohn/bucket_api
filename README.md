@@ -38,3 +38,13 @@ following response will be returned.
     "status": "failed"
 }
 ```
+
+If the request is successful and the user has been registered the
+response below is returned. With an auth token
+```
+{
+    "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDM0ODQ5OTYsImlhdCI6MTUwMzM5ODU4Niwic3ViIjo1fQ.GC6IEOohdo_xrz9__UeugIlir0qtJdKbEzBtLgqjt5A",
+    "message": "Successfully registered",
+    "status": "success"
+}
+```
