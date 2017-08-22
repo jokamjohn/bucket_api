@@ -86,7 +86,7 @@ class TestAuthBluePrint(BaseTestCase):
 
     def register_user(self):
         """
-        Registering a user with dummy data
+        Helper method for registering a user with dummy data
         :return:
         """
         return self.client.post(

@@ -14,6 +14,10 @@ class TestDevelopmentConfig(TestCase):
         return app
 
     def test_app_in_development(self):
+        """
+        Test that the development configs are set correctly.
+        :return:
+        """
         self.assertFalse(app.config['SECRET_KEY'] is 'john kagga')
         self.assertTrue(app.config['DEBUG'], True)
         self.assertTrue(app.config['BCRYPT_HASH_PREFIX'] == 4)
@@ -24,13 +28,17 @@ class TestDevelopmentConfig(TestCase):
 class TestTestingConfig(TestCase):
     def create_app(self):
         """
-                Create an instance of the app with the testing configuration
-                :return:
-                """
+        Create an instance of the app with the testing configuration
+        :return:
+        """
         app.config.from_object('app.config.TestingConfig')
         return app
 
     def test_app_in_testing(self):
+        """
+        Test that the testing configs are set correctly
+        :return:
+        """
         self.assertFalse(app.config['SECRET_KEY'] is 'john kagga')
         self.assertTrue(app.config['DEBUG'], True)
         self.assertTrue(app.config['TESTING'] is True)
