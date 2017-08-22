@@ -8,6 +8,7 @@ class User(db.Model):
     Table schema
     """
     __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
@@ -53,3 +54,18 @@ class User(db.Model):
             return 'Signature expired, Please sign in again'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please sign in again'
+
+
+class BlackListToken(db.Model):
+    """
+    Table to store blacklisted/invalid auth tokens
+    """
+    __tablename__ = 'blacklist_token'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    token = db.Column(db.String(255), unique=True, nullable=False)
+    blacklisted_on = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, token):
+        self.token = token
+        self.blacklisted_on = datetime.datetime.now()
