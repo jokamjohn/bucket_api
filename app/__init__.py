@@ -1,7 +1,6 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from app.auth.views import auth
 from flask_bcrypt import Bcrypt
 
 # Initialize application
@@ -21,4 +20,6 @@ bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
 # Register blue prints
+from app.auth.views import auth
+
 app.register_blueprint(auth)
