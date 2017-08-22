@@ -68,6 +68,9 @@ class LoginUser(MethodView):
 
 
 class LogOutUser(MethodView):
+    """
+    Class to log out a user
+    """
     def post(self):
         auth_header = request.headers.get('Authorization')
         if auth_header:

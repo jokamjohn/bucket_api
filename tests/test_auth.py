@@ -187,6 +187,28 @@ class TestAuthBluePrint(BaseTestCase):
             self.assertTrue(data['message'] == 'Provide a valid auth token')
             self.assertEqual(response.status_code, 403)
 
+    def test_user_token_was_blacklisted(self):
+        """
+        Test that the auth token has already been added to the Blaclisted tokens table,
+        so a user cannot log out.
+        :return:
+        """
+        with self.client:
+            # Register and login user
+            login_data = self.register_and_login_in_user()
+            # Logout user
+            logout_response = self.logout_user(login_data['auth_token'])
+            logout_data = json.loads(logout_response.data.decode())
+            self.assertEqual(logout_response.status_code, 200)
+            self.assertTrue(logout_data['status'] == 'success')
+            self.assertTrue(logout_data['message'] == 'Successfully logged out')
+
+            logout_again_response = self.logout_user(login_data['auth_token'])
+            logout_again_data = json.loads(logout_again_response.data.decode())
+            self.assertEqual(logout_again_response.status_code, 401)
+            self.assertTrue(logout_again_data['status'] == 'failed')
+            self.assertTrue(logout_again_data['message'] == 'Token was Blacklisted, Please login In')
+
     def logout_user(self, token):
         """
         Helper method to log out a user
