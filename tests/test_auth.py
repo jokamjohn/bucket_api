@@ -136,13 +136,13 @@ class TestAuthBluePrint(BaseTestCase):
             # Register and login user
             login_data = self.register_and_login_in_user()
             # Logout user
-            logout_response = self.logout_user(json.loads(login_data['auth_token']))
+            logout_response = self.logout_user(login_data['auth_token'])
             logout_data = json.loads(logout_response.data.decode())
             self.assertEqual(logout_response.status_code, 200)
             self.assertTrue(logout_data['status'] == 'success')
             self.assertTrue(logout_data['message'] == 'Successfully logged out')
 
-    def test_invalid_user_log_out(self):
+    def test_expired_user_token_user_log_out(self):
         """
         Try to log out a user whose auth token has expired.
         :return:
@@ -150,13 +150,42 @@ class TestAuthBluePrint(BaseTestCase):
         with self.client:
             login_data = self.register_and_login_in_user()
             # Pause for 10 seconds
-            time.sleep(10)
+            time.sleep(8)
             # Logout user
-            logout_response = self.logout_user(json.loads(login_data['auth_token']))
+            logout_response = self.logout_user(login_data['auth_token'])
             logout_data = json.loads(logout_response.data.decode())
-            self.assertEqual(logout_response.status_code, 200)
             self.assertTrue(logout_data['status'] == 'failed')
-            self.assertTrue(logout_data['message'] == 'Signature expired. Please log in again.')
+            self.assertTrue(logout_data['message'] == 'Signature expired, Please sign in again')
+            self.assertEqual(logout_response.status_code, 401)
+
+    def test_log_out_request_contains_an_authorization_header(self):
+        """
+        Test that the authorization header is set
+        :return:
+        """
+        with self.client:
+            response = self.client.post(
+                'auth/logout',
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Provide an authorization header')
+            self.assertEqual(response.status_code, 403)
+
+    def test_log_out_has_a_valid_token(self):
+        """
+        Test that a valid authorization token has been sent within the header
+        :return:
+        """
+        with self.client:
+            response = self.client.post(
+                'auth/logout',
+                headers=dict(Authorization='Bearersdfsdvfj.bvdfvbdfxcvxcxcv')
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Provide a valid auth token')
+            self.assertEqual(response.status_code, 403)
 
     def logout_user(self, token):
         """
