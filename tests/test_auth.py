@@ -149,8 +149,8 @@ class TestAuthBluePrint(BaseTestCase):
         """
         with self.client:
             login_data = self.register_and_login_in_user()
-            # Pause for 10 seconds
-            time.sleep(25)
+            # Pause for 3 seconds
+            time.sleep(3)
             # Logout user
             logout_response = self.logout_user(login_data['auth_token'])
             logout_data = json.loads(logout_response.data.decode())
@@ -209,6 +209,85 @@ class TestAuthBluePrint(BaseTestCase):
             self.assertTrue(logout_again_data['status'] == 'failed')
             self.assertTrue(logout_again_data['message'] == 'Token was Blacklisted, Please login In')
 
+    def test_token_required_method_incorrect_authorization_token(self):
+        """
+        Test that the sent authorization header is incorrect
+        :return:
+        """
+        with self.client:
+            response = self.client.get(
+                '/bucketlists',
+                headers=dict(Authorization='Bearerfgghjkljkhjvhbjn')
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 403)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Provide a valid auth token')
+
+    def test_token_required_method_authorization_token_missing(self):
+        """
+        Test that the authorization token is missing on a request to get private
+        user data
+        :return:
+        """
+        with self.client:
+            response = self.client.get(
+                '/bucketlists'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 401)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Token is missing')
+
+    def test_token_required_method_invalid_authorization_token(self):
+        with self.client:
+            response = self.client.get(
+                '/bucketlists',
+                headers=dict(Authorization='Bearer fgghjkljkhjvhbjn.sdfsdgfgfg')
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 401)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Invalid token. Please sign in again')
+
+    def test_token_required_method_blacklisted_authorization_token(self):
+        """
+        Test that the token being used to access a user resource was blacklisted
+        :return:
+        """
+        with self.client:
+            # Register and login a user
+            json_response = self.register_and_login_in_user()
+            # Logout a user
+            token = json_response['auth_token']
+            self.logout_user(token)
+            # Send a Get request to bucketlists endpoint
+            response = self.client.get(
+                '/bucketlists',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 401)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Token was Blacklisted, Please login In')
+
+    def test_token_required_method_expired_authorization_token(self):
+        with self.client:
+            # Register and login a user
+            json_response = self.register_and_login_in_user()
+            token = json_response['auth_token']
+            # Pause method for 3 seconds for the token to expire
+            time.sleep(3)
+            # Send a Get request to bucketlists endpoint
+            response = self.client.get(
+                '/bucketlists',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 401)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Signature expired, Please sign in again')
+
     def logout_user(self, token):
         """
         Helper method to log out a user
@@ -224,7 +303,7 @@ class TestAuthBluePrint(BaseTestCase):
     def register_and_login_in_user(self):
         """
         Helper method to sign up and login a user
-        :return:
+        :return: Json login response
         """
         reg_response = self.register_user('john@gmail.com', '123456')
         data = json.loads(reg_response.data.decode())

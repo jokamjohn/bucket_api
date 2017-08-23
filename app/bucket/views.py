@@ -1,20 +1,11 @@
-from flask import Blueprint
-from flask.views import MethodView
+from flask import Blueprint, request, make_response, jsonify
+from app.auth.helper import token_required
 
 # Initialize blueprint
 bucket = Blueprint('bucket', __name__)
 
 
-class BucketLists(MethodView):
-    def post(self):
-        pass
-
-    def get(self):
-        pass
-
-
-# Register view functions
-bucketlists_view = BucketLists.as_view('bucketlists')
-
-# Add rule for the endpoint
-bucket.add_url_rule('/bucketlists', view_func=bucketlists_view, methods=['POST', 'GET'])
+@bucket.route('/bucketlists', methods=['GET'])
+@token_required
+def bucketlist(current_user):
+    return make_response(jsonify({'message': current_user.email}))
