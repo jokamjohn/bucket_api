@@ -94,6 +94,8 @@ class Bucket(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    create_at = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, name):
         self.name = name
+        self.create_at = datetime.datetime.utcnow()

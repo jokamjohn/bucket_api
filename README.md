@@ -1,4 +1,6 @@
 # Bucket List API
+[![BCH compliance](https://bettercodehub.com/edge/badge/jokamjohn/bucket_api?branch=master)](https://bettercodehub.com/)
+
 The api enables you to create/ register a user within the application.
 
 ## Usage
