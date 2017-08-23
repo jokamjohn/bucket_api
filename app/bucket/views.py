@@ -72,6 +72,28 @@ def get_bucket(current_user, bucket_id):
         return response('failed', 'Please provide a valid Bucket Id', 400)
 
 
+@bucket.route('/bucketlists/<bucket_id>', methods=['PUT'])
+@token_required
+def edit_bucket(current_user, bucket_id):
+    if request.content_type == 'application/json':
+        data = request.get_json()
+        name = data.get('name')
+        if name:
+            try:
+                int(bucket_id)
+            except ValueError:
+                return response('failed', 'Please provide a valid Bucket Id', 400)
+            try:
+                user = User.query.filter_by(id=current_user.id).first()
+                user_bucket = user.buckets.filter_by(id=bucket_id).first()
+                user_bucket.update(name)
+            except exc.DatabaseError as error:
+                return response('failed', 'Operation failed, try again', 202)
+            return response_for_created_bucket(user_bucket, 201)
+        return response('failed', 'No attribute or value was specified, nothing was changed', 400)
+    return response('failed', 'Content-type must be json', 202)
+
+
 @bucket.route('/bucketlists/<bucket_id>', methods=['DELETE'])
 @token_required
 def delete_bucket(current_user, bucket_id):
@@ -98,6 +120,16 @@ def handle_404_error(e):
     :return:
     """
     return response('failed', 'Bucket resource cannot be found', 404)
+
+
+@bucket.errorhandler(400)
+def handle_400_errors(e):
+    """
+    Return a custom response for 400 errors.
+    :param e:
+    :return:
+    """
+    return response('failed', 'Bad Request', 400)
 
 
 def response_for_user_bucket(user_bucket):

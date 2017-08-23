@@ -113,6 +113,15 @@ class Bucket(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self, name):
+        """
+        Update the name of the Bucket
+        :param name:
+        :return:
+        """
+        self.name = name
+        db.session.commit()
+
     def delete(self):
         """
         Delete a Bucket from the database

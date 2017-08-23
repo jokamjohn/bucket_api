@@ -146,6 +146,75 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'Please provide a valid Bucket Id')
 
+    def test_bucket_is_updated(self):
+        """
+        Test that the Bucket details(name) is updated
+        :return:
+        """
+        with self.client:
+            # Get an auth token
+            token = self.get_user_token()
+            # Create a Bucket
+            response = self.client.post(
+                '/bucketlists',
+                data=json.dumps(dict(name='Travel')),
+                headers=dict(Authorization='Bearer ' + token),
+                content_type='application/json'
+            )
+            # Test Bucket creation
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+            self.assertTrue(data['status'], 'success')
+            self.assertTrue(data['name'], 'Travel')
+            # Update the bucket name
+            res = self.client.put(
+                '/bucketlists/1',
+                headers=dict(Authorization='Bearer ' + token),
+                data=json.dumps(dict(name='Adventure')),
+                content_type='application/json'
+            )
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 201)
+            self.assertTrue(res.content_type == 'application/json')
+            self.assertTrue(data['status'] == 'success')
+            self.assertTrue(data['name'] == 'Adventure')
+            self.assertEqual(data['id'], 1)
+
+    def test_content_type_for_editing_bucket_is_json(self):
+        """
+        Test that the content type used for the request is application/json
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            res = self.client.put(
+                '/bucketlists/1',
+                headers=dict(Authorization='Bearer ' + token),
+                data=json.dumps(dict(name='Adventure'))
+            )
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 202)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Content-type must be json')
+
+    def test_required_name_attribute_is_in_the_request_payload_and_has_a_value(self):
+        """
+        Test that the required attribute(name) exists and has value in the request payload
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            res = self.client.put(
+                '/bucketlists/1',
+                headers=dict(Authorization='Bearer ' + token),
+                data=json.dumps(dict(name='')),
+                content_type='application/json'
+            )
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 400)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'No attribute or value was specified, nothing was changed')
+
     def test_bucket_is_deleted(self):
         """
         Test that a Bucket is deleted successfully
@@ -171,12 +240,28 @@ class TestBucketBluePrint(BaseTestCase):
                 '/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token)
             )
-            print(res.data)
             data = json.loads(res.data.decode())
             self.assertEqual(res.status_code, 200)
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['message'] == 'Bucket Deleted successfully')
             self.assertTrue(res.content_type == 'application/json')
+
+    def test_400_bad_requests(self):
+        """
+        Test for Bad requests - 400s
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            res = self.client.put(
+                '/bucketlists/1',
+                headers=dict(Authorization='Bearer ' + token),
+                content_type='application/json'
+            )
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 400)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Bad Request')
 
 
 if __name__ == '__main__':
