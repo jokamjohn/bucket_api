@@ -23,3 +23,7 @@ db = SQLAlchemy(app)
 from app.auth.views import auth
 
 app.register_blueprint(auth)
+
+from app.bucket.views import bucket
+
+app.register_blueprint(bucket)
