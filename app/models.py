@@ -113,6 +113,14 @@ class Bucket(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        """
+        Delete a Bucket from the database
+        :return:
+        """
+        db.session.delete(self)
+        db.session.commit()
+
     def json(self):
         """
         Json representation of the bucket model.

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, jsonify
+from flask import Blueprint, request, make_response, jsonify, abort
 from app.auth.helper import token_required
 from app.models import User, Bucket
 from app import db
@@ -70,6 +70,34 @@ def get_bucket(current_user, bucket_id):
             return response_for_user_bucket({})
     except ValueError:
         return response('failed', 'Please provide a valid Bucket Id', 400)
+
+
+@bucket.route('/bucketlists/<bucket_id>', methods=['DELETE'])
+@token_required
+def delete_bucket(current_user, bucket_id):
+    try:
+        int(bucket_id)
+        try:
+            user = User.query.filter_by(id=current_user.id).first()
+            user_bucket = user.buckets.filter_by(id=bucket_id).first()
+            if not user_bucket:
+                abort(404)
+            user_bucket.delete()
+        except exc.DatabaseError:
+            return response('failed', 'Operation Failed, try again', 202)
+        return response('success', 'Bucket Deleted successfully', 200)
+    except ValueError:
+        return response('failed', 'Please provide a valid Bucket Id', 400)
+
+
+@bucket.errorhandler(404)
+def handle_404_error(e):
+    """
+    Return a custom message for 404 errors.
+    :param e:
+    :return:
+    """
+    return response('failed', 'Bucket resource cannot be found', 404)
 
 
 def response_for_user_bucket(user_bucket):

@@ -69,4 +69,5 @@ class BaseTestCase(TestCase):
         Get a user token
         :return:
         """
-        return self.register_and_login_in_user()['auth_token']
+        auth_res = self.register_user('example@gmail.com', '123456')
+        return json.loads(auth_res.data.decode())['auth_token']
