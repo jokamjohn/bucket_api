@@ -288,6 +288,32 @@ class TestAuthBluePrint(BaseTestCase):
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'Signature expired, Please sign in again')
 
+    def register_and_login_in_user(self):
+        """
+        Helper method to sign up and login a user
+        :return: Json login response
+        """
+        reg_response = self.register_user('john@gmail.com', '123456')
+        data = json.loads(reg_response.data.decode())
+        self.assertTrue(data['status'] == 'success')
+        self.assertTrue(data['message'] == 'Successfully registered')
+        self.assertTrue(data['auth_token'])
+        self.assertTrue(reg_response.content_type == 'application/json')
+        self.assertEqual(reg_response.status_code, 201)
+        # Login the user
+        login_response = self.client.post(
+            'auth/login',
+            data=json.dumps(dict(email='john@gmail.com', password='123456')),
+            content_type='application/json'
+        )
+        login_data = json.loads(login_response.data.decode())
+        self.assertEqual(login_response.status_code, 200)
+        self.assertTrue(login_data['auth_token'])
+        self.assertTrue(login_data['status'] == 'success')
+        self.assertTrue(login_data['message'] == 'Successfully logged In')
+        self.assertTrue(login_response.content_type == 'application/json')
+        return login_data
+
     def logout_user(self, token):
         """
         Helper method to log out a user
