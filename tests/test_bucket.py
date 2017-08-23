@@ -51,6 +51,21 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertTrue(data['status'], 'failed')
             self.assertTrue(data['message'], 'Content-type must be json')
 
+    def test_user_can_get_list_of_buckets(self):
+        """
+        Test that a user gets back a list of their buckets or an empty dictionary if they do not have any yet
+        :return:
+        """
+        with self.client:
+            response = self.client.get(
+                '/bucketlists',
+                headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['status'] == 'success')
+            self.assertIsInstance(data['buckets'], dict)
+
 
 if __name__ == '__main__':
     unittest.main()
