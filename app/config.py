@@ -37,4 +37,5 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = postgres_local_base + database_name + "_test"
     BCRYPT_HASH_PREFIX = 4
     AUTH_TOKEN_EXPIRY_DAYS = 0
-    AUTH_TOKEN_EXPIRY_SECONDS = 1
+    AUTH_TOKEN_EXPIRY_SECONDS = 3
+    AUTH_TOKEN_EXPIRATION_TIME_DURING_TESTS = 5

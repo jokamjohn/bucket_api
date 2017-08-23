@@ -97,7 +97,18 @@ class Bucket(db.Model):
     name = db.Column(db.String(255), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     create_at = db.Column(db.DateTime, nullable=False)
+    modified_at = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, name):
+    def __init__(self, name, user_id):
         self.name = name
+        self.user_id = user_id
         self.create_at = datetime.datetime.utcnow()
+        self.modified_at = datetime.datetime.utcnow()
+
+    def save(self):
+        """
+        Persist a bucket in the database
+        :return:
+        """
+        db.session.add(self)
+        db.session.commit()
