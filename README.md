@@ -124,3 +124,32 @@ Without an Authorization header
     "status": "failed"
 }
 ```
+
+## BucketList
+The user is also able to create and get back a list of their buckets.
+### Create Bucket
+Below is an example of a request to create a bucket. **name** is a
+required attribute. An auth token must be attached in the Authorization
+header
+```
+{
+  "name": "Travel"
+}
+```
+The following response will be returned
+```
+{
+    "createdAt": "Wed, 23 Aug 2017 10:14:52 GMT",
+    "id": 2,
+    "modifiedAt": "Wed, 23 Aug 2017 10:14:52 GMT",
+    "name": "Travel",
+    "status": "success"
+}
+```
+### Get user`s Buckets
+Below is an example of a *get* request endpoint to get the users buckets.
+An auth token must be attached in the Authorization
+header
+```
+/bucketlists
+```
