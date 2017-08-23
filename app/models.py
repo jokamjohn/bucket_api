@@ -112,3 +112,15 @@ class Bucket(db.Model):
         """
         db.session.add(self)
         db.session.commit()
+
+    def json(self):
+        """
+        Json representation of the bucket model.
+        :return:
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'createdAt': self.create_at.isoformat(),
+            'modifiedAt': self.modified_at.isoformat()
+        }

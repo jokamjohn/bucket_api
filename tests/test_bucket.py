@@ -5,6 +5,10 @@ import json
 
 class TestBucketBluePrint(BaseTestCase):
     def test_creating_a_bucket(self):
+        """
+        Test that a user can add a bucket
+        :return:
+        """
         with self.client:
             response = self.client.post(
                 '/bucketlists',
@@ -65,6 +69,36 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertTrue(data['status'] == 'success')
             self.assertIsInstance(data['buckets'], dict)
+
+    def test_request_for_a_bucket_has_integer_id(self):
+        """
+        Test that only integer bucket Ids are allowed
+        :return:
+        """
+        with self.client:
+            response = self.client.get(
+                '/bucketlists/dsfgsdsg',
+                headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Please provide a valid Bucket Id')
+
+    def test_bucket_is_returned(self):
+        """
+        Test that a user bucket is returned when a specific Id is specified
+        :return:
+        """
+        with self.client:
+            response = self.client.get(
+                '/bucketlists/1',
+                headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['status'] == 'success')
+            self.assertIsInstance(data['bucket'], dict)
 
 
 if __name__ == '__main__':

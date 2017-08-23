@@ -43,14 +43,51 @@ def create_bucketlist(current_user):
                 db.session.commit()
             except exc.DatabaseError as error:
                 return response('failed', 'Operation failed, try again', 202)
-            return response_create_bucket(user_bucket)
+            return response_for_created_bucket(user_bucket, 201)
         return response('failed', 'Missing name attribute', 400)
     return response('failed', 'Content-type must be json', 202)
 
 
-def response_create_bucket(user_bucket):
+@bucket.route('/bucketlists/<bucket_id>', methods=['GET'])
+@token_required
+def get_bucket(current_user, bucket_id):
+    """
+    Return a user bucket with the supplied user Id.
+    :param current_user: User
+    :param bucket_id: Bucket Id
+    :return:
+    """
+    try:
+        int(bucket_id)
+        try:
+            user = User.query.filter_by(id=current_user.id).first()
+            user_bucket = user.buckets.filter_by(id=bucket_id).first()
+        except exc.DatabaseError:
+            return response('failed', 'Operation Failed, try again', 202)
+        else:
+            if user_bucket:
+                return response_for_user_bucket(user_bucket.json())
+            return response_for_user_bucket({})
+    except ValueError:
+        return response('failed', 'Please provide a valid Bucket Id', 400)
+
+
+def response_for_user_bucket(user_bucket):
+    """
+    Return the response for when a single bucket when requested by the user.
+    :param user_bucket:
+    :return:
+    """
+    return make_response(jsonify({
+        'status': 'success',
+        'bucket': user_bucket
+    }))
+
+
+def response_for_created_bucket(user_bucket, status_code):
     """
     Method returning the response when a bucket has been successfully created.
+    :param status_code:
     :param user_bucket: Bucket
     :return: Http Response
     """
@@ -60,7 +97,7 @@ def response_create_bucket(user_bucket):
         'name': user_bucket.name,
         'createdAt': user_bucket.create_at,
         'modifiedAt': user_bucket.modified_at
-    })), 201
+    })), status_code
 
 
 def response(status, message, code):
@@ -85,13 +122,7 @@ def get_user_bucket_json_list(user_buckets):
     """
     buckets = []
     for user_bucket in user_buckets:
-        obj = {
-            'id': user_bucket.id,
-            'name': user_bucket.name,
-            'createdAt': user_bucket.create_at,
-            'modifiedAt': user_bucket.modified_at
-        }
-        buckets.append(obj)
+        buckets.append(user_bucket.json())
     return buckets
 
 
