@@ -11,9 +11,12 @@ bucket = Blueprint('bucket', __name__)
 @bucket.route('/bucketlists', methods=['GET'])
 @token_required
 def bucketlist(current_user):
-    # Get user id
-    # Query database
-    # return the first 100
+    """
+    Return all the buckets owned by the user or limit them to 10.
+    Return an empty buckets object if user has no buckets
+    :param current_user:
+    :return:
+    """
     try:
         user = User.query.filter_by(id=current_user.id).first()
         user_buckets = user.buckets.limit(10).all()

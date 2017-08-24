@@ -27,3 +27,7 @@ app.register_blueprint(auth)
 from app.bucket.views import bucket
 
 app.register_blueprint(bucket)
+
+from app.bucketitems.views import bucketitems
+
+app.register_blueprint(bucketitems)
