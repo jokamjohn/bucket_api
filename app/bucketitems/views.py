@@ -36,6 +36,35 @@ def get_items(current_user, bucket_id):
     return response_with_bucket_items('success', [], 200)
 
 
+@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['GET'])
+@token_required
+@bucket_required
+def get_item(current_user, bucket_id, item_id):
+    # Check item id is an integer
+    try:
+        int(item_id)
+    except ValueError:
+        return response('failed', 'Provide a valid item Id', 202)
+
+    # Get the user Bucket
+    try:
+        bucket = get_user_bucket(current_user, bucket_id)
+    except exc.DatabaseError:
+        return response('failed', 'Operation failed, try again', 202)
+
+    if bucket is None:
+        return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
+
+    # Delete the item from the bucket
+    try:
+        item = bucket.items.filter_by(id=item_id).first()
+        if not item:
+            abort(404)
+    except exc.DatabaseError:
+        return response('failed', 'Operation failed, try again', 202)
+    return response_with_bucket_item('success', item, 200)
+
+
 @bucketitems.route('/bucketlists/<bucket_id>/items', methods=['POST'])
 @token_required
 @bucket_required

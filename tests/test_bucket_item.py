@@ -146,6 +146,72 @@ class TestBucketItem(BaseTestCase):
             self.assertEqual(len(data['items']), 0, msg="The length of the items list must be 0")
             self.assertEqual(response.status_code, 200)
 
+    def test_item_is_returned_successfully_get_request(self):
+        """
+        Test an item is returned on a get request
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_bucket(token)
+            self.create_item(token)
+            response = self.client.get(
+                '/bucketlists/1/items/1',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertEqual(data['item']['id'], 1)
+            self.assertTrue(data['item']['name'] == 'food')
+            self.assertEqual(response.status_code, 200)
+
+    def test_item_to_be_returned_on_get_request_does_not_exist(self):
+        """
+        Test that the item to be returned on a get request does not exist.
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_bucket(token)
+            response = self.client.get(
+                '/bucketlists/1/items/1',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Item not found')
+            self.assertEqual(response.status_code, 404)
+
+    def test_invalid_item_id_get_one_item_request(self):
+        """
+        Test that an invalid item Id has been sent to get an item
+        :return:
+        """
+        with self.client:
+            response = self.client.get(
+                '/bucketlists/1/items/dsfdgfghjg',
+                headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Provide a valid item Id')
+            self.assertEqual(response.status_code, 202)
+
+    def test_no_bucket_on_get_item_request(self):
+        """
+        Test there is no Bucket specified by that Id when getting an item by Id
+        :return:
+        """
+        with self.client:
+            response = self.client.get(
+                '/bucketlists/1/items/1',
+                headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'User has no Bucket with Id 1')
+            self.assertEqual(response.status_code, 202)
+
     def test_invalid_item_id_delete_request(self):
         """
         Test that an invalid item Id has been sent.
