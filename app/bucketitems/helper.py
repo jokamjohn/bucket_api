@@ -55,6 +55,20 @@ def response_with_bucket_item(status, item, status_code):
     })), status_code
 
 
+def response_with_bucket_items(status, items, status_code):
+    """
+    Http response for response with a bucket item.
+    :param items: List of Items
+    :param status: Status Message
+    :param status_code: Http Status Code
+    :return:
+    """
+    return make_response(jsonify({
+        'status': status,
+        'items': items
+    })), status_code
+
+
 def get_user_bucket(current_user, bucket_id):
     """
     Query the user to find and return the bucket specified by the bucket Id

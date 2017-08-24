@@ -65,13 +65,30 @@ class TestBucketItem(BaseTestCase):
             self.assertTrue(data['message'] == 'No name or value attribute found')
             self.assertEqual(response.status_code, 401)
 
-    def test_correct_response_when_user_has_no_bucket_with_specified_id(self):
+    def test_correct_response_when_user_has_no_bucket_with_specified_id_post_request(self):
         """
         Test that a user does not have a Bucket specified by that Id
         :return:
         """
         with self.client:
             response = self.client.post(
+                '/bucketlists/1/items',
+                data=json.dumps(dict(name='food')),
+                content_type='application/json',
+                headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'User has no Bucket with Id 1')
+            self.assertEqual(response.status_code, 202)
+
+    def test_correct_response_when_user_has_no_bucket_with_specified_id_get_request(self):
+        """
+        Test that a user does not have a Bucket specified by that Id
+        :return:
+        """
+        with self.client:
+            response = self.client.get(
                 '/bucketlists/1/items',
                 data=json.dumps(dict(name='food')),
                 content_type='application/json',
@@ -90,18 +107,63 @@ class TestBucketItem(BaseTestCase):
         with self.client:
             token = self.get_user_token()
             self.create_bucket(token)
-            response = self.client.post(
+            self.create_item(token)
+
+    def test_items_are_returned(self):
+        """
+        Test Bucket Items are returned and the items are in a list
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_bucket(token)
+            self.create_item(token)
+            response = self.client.get(
                 '/bucketlists/1/items',
-                data=json.dumps(dict(name='food', description='Enjoying the good life')),
-                content_type='application/json',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'success')
-            self.assertEqual(data['item']['id'], 1)
-            self.assertTrue(data['item']['name'] == 'food')
-            self.assertTrue(data['item']['description'] == 'Enjoying the good life')
+            self.assertIsInstance(data['items'], list, 'Items must be a list')
+            self.assertEqual(len(data['items']), 1)
             self.assertEqual(response.status_code, 200)
+
+    def test_empty_item_list_is_returned_when_no_items_in_bucket(self):
+        """
+        Test empty items list is returned when the bucket is empty
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_bucket(token)
+            response = self.client.get(
+                '/bucketlists/1/items',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertIsInstance(data['items'], list, 'Items must be a list')
+            self.assertEqual(len(data['items']), 0, msg="The length of the items list must be 0")
+            self.assertEqual(response.status_code, 200)
+
+    def create_item(self, token):
+        """
+        Create an item into a bucket
+        :param token:
+        :return:
+        """
+        response = self.client.post(
+            '/bucketlists/1/items',
+            data=json.dumps(dict(name='food', description='Enjoying the good life')),
+            content_type='application/json',
+            headers=dict(Authorization='Bearer ' + token)
+        )
+        data = json.loads(response.data.decode())
+        self.assertTrue(data['status'] == 'success')
+        self.assertEqual(data['item']['id'], 1)
+        self.assertTrue(data['item']['name'] == 'food')
+        self.assertTrue(data['item']['description'] == 'Enjoying the good life')
+        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':
