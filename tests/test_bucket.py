@@ -10,17 +10,7 @@ class TestBucketBluePrint(BaseTestCase):
         :return:
         """
         with self.client:
-            response = self.client.post(
-                '/bucketlists',
-                data=json.dumps(dict(name='Travel')),
-                headers=dict(Authorization='Bearer ' + self.get_user_token()),
-                content_type='application/json'
-            )
-            data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 201)
-            self.assertTrue(data['status'], 'success')
-            self.assertTrue(data['name'], 'Travel')
-            self.assertIsInstance(data['id'], int, msg='Value should be a string')
+            self.create_bucket(self.get_user_token())
 
     def test_name_attribute_is_set_in_bucket_creation_request(self):
         """

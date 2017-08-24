@@ -45,3 +45,20 @@ class BaseTestCase(TestCase):
         """
         auth_res = self.register_user('example@gmail.com', '123456')
         return json.loads(auth_res.data.decode())['auth_token']
+
+    def create_bucket(self, token):
+        """
+        Helper function to create a bucket
+        :return:
+        """
+        response = self.client.post(
+            '/bucketlists',
+            data=json.dumps(dict(name='Travel')),
+            headers=dict(Authorization='Bearer ' + token),
+            content_type='application/json'
+        )
+        data = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(data['status'], 'success')
+        self.assertTrue(data['name'], 'Travel')
+        self.assertIsInstance(data['id'], int, msg='Value should be a string')

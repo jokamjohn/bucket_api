@@ -167,6 +167,14 @@ class BucketItem(db.Model):
         self.create_at = datetime.datetime.utcnow()
         self.modified_at = datetime.datetime.utcnow()
 
+    def save(self):
+        """
+        Persist Item into the database
+        :return:
+        """
+        db.session.add(self)
+        db.session.commit()
+
     def json(self):
         """
         Json representation of the model
