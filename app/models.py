@@ -93,11 +93,14 @@ class Bucket(db.Model):
     """
     Class to represent the BucketList model
     """
+    __tablename__ = 'buckets'
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     create_at = db.Column(db.DateTime, nullable=False)
     modified_at = db.Column(db.DateTime, nullable=False)
+    items = db.relationship('BucketItem', backref='item', lazy='dynamic')
 
     def __init__(self, name, user_id):
         self.name = name
@@ -138,6 +141,42 @@ class Bucket(db.Model):
         return {
             'id': self.id,
             'name': self.name,
+            'createdAt': self.create_at.isoformat(),
+            'modifiedAt': self.modified_at.isoformat()
+        }
+
+
+class BucketItem(db.Model):
+    """
+    BucketItem model class
+    """
+
+    __tablename__ = 'bucketitems'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    bucket_id = db.Column(db.Integer, db.ForeignKey('buckets.id'))
+    create_at = db.Column(db.DateTime, nullable=False)
+    modified_at = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, name, description, bucket_id):
+        self.name = name
+        self.description = description
+        self.bucket_id = bucket_id
+        self.create_at = datetime.datetime.utcnow()
+        self.modified_at = datetime.datetime.utcnow()
+
+    def json(self):
+        """
+        Json representation of the model
+        :return:
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'bucketId': self.bucket_id,
             'createdAt': self.create_at.isoformat(),
             'modifiedAt': self.modified_at.isoformat()
         }
