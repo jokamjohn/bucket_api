@@ -175,6 +175,14 @@ class BucketItem(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        """
+        Delete an item
+        :return:
+        """
+        db.session.delete(self)
+        db.session.commit()
+
     def json(self):
         """
         Json representation of the model

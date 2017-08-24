@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, abort
 from app.auth.helper import token_required
 from app.bucketitems.helper import bucket_required, response, get_user_bucket, response_with_bucket_item, \
     response_with_bucket_items
@@ -11,7 +11,7 @@ bucketitems = Blueprint('items', __name__)
 @bucketitems.route('/bucketlists/<bucket_id>/items', methods=['GET'])
 @token_required
 @bucket_required
-def get(current_user, bucket_id):
+def get_items(current_user, bucket_id):
     # Get the user Bucket
     try:
         bucket = get_user_bucket(current_user, bucket_id)
@@ -70,3 +70,50 @@ def post(current_user, bucket_id):
     except exc.DatabaseError:
         return response('failed', 'Operation failed, try again', 202)
     return response_with_bucket_item('success', item, 200)
+
+
+@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['DELETE'])
+@token_required
+@bucket_required
+def delete(current_user, bucket_id, item_id):
+    """
+    Delete an item from the user's Bucket.
+    :param current_user: User
+    :param bucket_id: Bucket Id
+    :param item_id: Item Id
+    :return:
+    """
+    # Check item id is an integer
+    try:
+        int(item_id)
+    except ValueError:
+        return response('failed', 'Provide a valid item Id', 202)
+
+    # Get the user Bucket
+    try:
+        bucket = get_user_bucket(current_user, bucket_id)
+    except exc.DatabaseError:
+        return response('failed', 'Operation failed, try again', 202)
+
+    if bucket is None:
+        return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
+
+    # Delete the item from the bucket
+    try:
+        item = bucket.items.filter_by(id=item_id).first()
+        if not item:
+            abort(404)
+        item.delete()
+    except exc.DatabaseError:
+        return response('failed', 'Operation failed, try again', 202)
+    return response('success', 'Successfully deleted the item from bucket with Id ' + bucket_id, 200)
+
+
+@bucketitems.errorhandler(404)
+def item_not_found(e):
+    """
+    Custom response to 404 errors.
+    :param e:
+    :return:
+    """
+    return response('failed', 'Item not found', 404)
