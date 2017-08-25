@@ -1,5 +1,8 @@
 # Bucket List API
+[![Build Status](https://travis-ci.org/jokamjohn/bucket_api.svg?branch=master)](https://travis-ci.org/jokamjohn/bucket_api)
+[![Coverage Status](https://coveralls.io/repos/github/jokamjohn/bucket_api/badge.svg)](https://coveralls.io/github/jokamjohn/bucket_api)
 [![BCH compliance](https://bettercodehub.com/edge/badge/jokamjohn/bucket_api?branch=master)](https://bettercodehub.com/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cfda51ef2f8946639eb34b11fa8b5480)](https://www.codacy.com/app/jokamjohn/bucket_api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jokamjohn/bucket_api&amp;utm_campaign=Badge_Grade)
 
 The api enables you to create/ register a user within the application.
 
