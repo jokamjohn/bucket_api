@@ -153,3 +153,14 @@ header
 ```
 /bucketlists
 ```
+
+## Running tests
+Before running the application tests, update your env variables
+```
+export  APP_SETTINGS="app.config.TestingConfig"
+export DATABASE_URL=<postgres database url>
+```
+You can now run the tests from the terminal
+```
+python manage.py test
+```
