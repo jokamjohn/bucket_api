@@ -175,6 +175,18 @@ class BucketItem(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def update(self, name, description=None):
+        """
+        Update the records in the item
+        :param name: Name
+        :param description: Description
+        :return:
+        """
+        self.name = name
+        if description is not None:
+            self.description = description
+        db.session.commit()
+
     def delete(self):
         """
         Delete an item

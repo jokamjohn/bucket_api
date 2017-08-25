@@ -101,6 +101,52 @@ def post(current_user, bucket_id):
     return response_with_bucket_item('success', item, 200)
 
 
+@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['PUT'])
+@token_required
+@bucket_required
+def edit_item(current_user, bucket_id, item_id):
+    if not request.content_type == 'application/json':
+        return response('failed', 'Content-type must be application/json', 401)
+
+    try:
+        int(item_id)
+    except ValueError:
+        return response('failed', 'Provide a valid item Id', 202)
+
+    # Get the user Bucket
+    try:
+        bucket = get_user_bucket(current_user, bucket_id)
+    except exc.DatabaseError:
+        return response('failed', 'Operation failed, try again', 202)
+
+    if bucket is None:
+        return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
+
+    # Get the item
+    try:
+        item = bucket.items.filter_by(id=item_id).first()
+        if not item:
+            abort(404)
+    except exc.DatabaseError:
+        return response('failed', 'Operation failed, try again', 202)
+
+    # Check for Json data
+    request_json_data = request.get_json()
+    item_new_name = request_json_data.get('name')
+    item_new_description = request_json_data.get('description', None)
+    if not request_json_data:
+        return response('failed', 'No attributes specified in the request', 401)
+
+    if not item_new_name:
+        return response('failed', 'No name or value attribute found', 401)
+
+    # Update the item record
+    try:
+        item.update(item_new_name, item_new_description)
+    except exc.DatabaseError:
+        return response('failed', 'Operation failed, try again', 202)
+
+
 @bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['DELETE'])
 @token_required
 @bucket_required

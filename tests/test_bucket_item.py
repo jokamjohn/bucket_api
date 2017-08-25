@@ -21,6 +21,23 @@ class TestBucketItem(BaseTestCase):
             self.assertTrue(data['message'] == 'Content-type must be application/json')
             self.assertEqual(response.status_code, 401)
 
+    def test_item_put_request_content_type(self):
+        """
+        Test that the correct response is returned if the request payload content type is not application/json
+        :return:
+        """
+        with self.client:
+            response = self.client.put(
+                '/bucketlists/1/items/1',
+                data=json.dumps(dict(name='food')),
+                content_type='application/javascript',
+                headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Content-type must be application/json')
+            self.assertEqual(response.status_code, 401)
+
     def test_bucket_id_is_invalid_in_request(self):
         """
         Test that the bucket Id is invalid
@@ -33,7 +50,23 @@ class TestBucketItem(BaseTestCase):
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
-            print(response.data)
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Provide a valid Bucket Id')
+            self.assertEqual(response.status_code, 401)
+
+    def test_bucket_id_is_invalid_in_put_request(self):
+        """
+        Test that the bucket Id is invalid
+        :return:
+        """
+        with self.client:
+            response = self.client.put(
+                '/bucketlists/id/items/1',
+                data=json.dumps(dict(name='Food')),
+                content_type='application/json',
+                headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'Provide a valid Bucket Id')
@@ -46,6 +79,26 @@ class TestBucketItem(BaseTestCase):
                 data=json.dumps(dict(description='')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'No name or value attribute found')
+            self.assertEqual(response.status_code, 401)
+
+    def test_name_attribute_is_missing_in_put_request(self):
+        """
+        Test name attribute is missing
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_bucket(token)
+            self.create_item(token)
+            response = self.client.put(
+                '/bucketlists/1/items/1',
+                data=json.dumps(dict(description='')),
+                content_type='application/json',
+                headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
