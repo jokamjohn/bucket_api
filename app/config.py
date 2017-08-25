@@ -34,7 +34,7 @@ class TestingConfig(BaseConfig):
     """
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', postgres_local_base + database_name + "_test")
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_TEST', postgres_local_base + database_name + "_test")
     BCRYPT_HASH_PREFIX = 4
     AUTH_TOKEN_EXPIRY_DAYS = 0
     AUTH_TOKEN_EXPIRY_SECONDS = 3

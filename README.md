@@ -157,8 +157,8 @@ header
 ## Running tests
 Before running the application tests, update your env variables
 ```
-export  APP_SETTINGS="app.config.TestingConfig"
-export DATABASE_URL="<postgres database url>"
+export  APP_SETTINGS=app.config.TestingConfig
+export DATABASE_URL_TEST=<postgres database url>
 ```
 ### Running tests without coverage
 You can now run the tests from the terminal
