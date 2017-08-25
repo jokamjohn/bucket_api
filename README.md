@@ -158,9 +158,17 @@ header
 Before running the application tests, update your env variables
 ```
 export  APP_SETTINGS="app.config.TestingConfig"
-export DATABASE_URL=<postgres database url>
+export DATABASE_URL="<postgres database url>"
 ```
+### Running tests without coverage
 You can now run the tests from the terminal
 ```
 python manage.py test
 ```
+### Running tests with coverage
+You can also run tests with coverage
+```
+python manage.py cov
+```
+After the tests have run the coverage report will be opened in your
+default browser where you can see the results.
