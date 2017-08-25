@@ -4,7 +4,6 @@ from app import app, db, models
 import unittest
 import coverage
 import os
-import webbrowser
 
 # Initializing the manager
 manager = Manager(app)
@@ -60,7 +59,6 @@ def cov():
         COV.html_report(directory=covdir)
         print('HTML version: file://%s/index.html' % covdir)
         COV.erase()
-        webbrowser.open('file://%s/index.html' % covdir)
         return 0
     return 1
 
