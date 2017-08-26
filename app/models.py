@@ -21,6 +21,16 @@ class User(db.Model):
             .decode('utf-8')
         self.registered_on = datetime.datetime.now()
 
+    def save(self):
+        """
+        Persist the user in the database
+        :param user:
+        :return:
+        """
+        db.session.add(self)
+        db.session.commit()
+        return self.encode_auth_token(self.id)
+
     def encode_auth_token(self, user_id):
         """
         Encode the Auth token
@@ -75,6 +85,14 @@ class BlackListToken(db.Model):
     def __init__(self, token):
         self.token = token
         self.blacklisted_on = datetime.datetime.now()
+
+    def blacklist(self):
+        """
+        Persist Blacklisted token in the database
+        :return:
+        """
+        db.session.add(self)
+        db.session.commit()
 
     @staticmethod
     def check_blacklist(token):

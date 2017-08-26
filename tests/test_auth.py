@@ -103,7 +103,7 @@ class TestAuthBluePrint(BaseTestCase):
             self.assertTrue(data['status'] == 'failed', msg='failed must be returned')
             self.assertTrue(data['message'] == 'Content-type must be json', msg='Check the returned message')
 
-    def test_login_has_correct_email_and_valid_length_password(self):
+    def test_login_has_incorrect_email_and_valid_length_password(self):
         """
         Test the email of the user trying to login is valid and the password length is greater than 4 characters
         :return:
@@ -111,7 +111,7 @@ class TestAuthBluePrint(BaseTestCase):
         with self.client:
             response = self.login_user('johngmail.com', '123456')
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 401)
             self.assertTrue(response.content_type == 'application/json')
             self.assertTrue(data['status'] == 'failed', msg='Status should be failed')
             self.assertTrue(data['message'] == 'Missing or wrong email format or password is less than four characters')
