@@ -12,6 +12,14 @@ bucketitems = Blueprint('items', __name__)
 @token_required
 @bucket_required
 def get_items(current_user, bucket_id):
+    """
+    A user`s items belonging to a Bucket specified by the bucket_id are returned if the Bucket Id
+    is valid and belongs to the user.
+    An empty item list is returned if the bucket has no items.
+    :param current_user: User
+    :param bucket_id: Bucket Id
+    :return: List of Items
+    """
     # Get the user Bucket
     try:
         bucket = get_user_bucket(current_user, bucket_id)
@@ -40,6 +48,14 @@ def get_items(current_user, bucket_id):
 @token_required
 @bucket_required
 def get_item(current_user, bucket_id, item_id):
+    """
+    An item can be returned from the Bucket if the item and Bucket exist and below to the user.
+    The Bucket and Item Ids must be valid.
+    :param current_user: User
+    :param bucket_id: Bucket Id
+    :param item_id: Item Id
+    :return:
+    """
     # Check item id is an integer
     try:
         int(item_id)
@@ -73,7 +89,7 @@ def post(current_user, bucket_id):
     Storing an item into a Bucket
     :param current_user: User
     :param bucket_id: Bucket Id
-    :return:
+    :return: Http Response
     """
     if not request.content_type == 'application/json':
         return response('failed', 'Content-type must be application/json', 401)
@@ -105,6 +121,15 @@ def post(current_user, bucket_id):
 @token_required
 @bucket_required
 def edit_item(current_user, bucket_id, item_id):
+    """
+    Edit an item with a valid Id. The request content-type must be json and also the Bucket
+    in which the item belongs must be among the user`s Buckets.
+    The name of the item must be present in the payload but the description is optional.
+    :param current_user: User
+    :param bucket_id: Bucket Id
+    :param item_id: Item Id
+    :return: Response of Edit Item
+    """
     if not request.content_type == 'application/json':
         return response('failed', 'Content-type must be application/json', 401)
 
@@ -156,7 +181,7 @@ def delete(current_user, bucket_id, item_id):
     :param current_user: User
     :param bucket_id: Bucket Id
     :param item_id: Item Id
-    :return:
+    :return: Http Response
     """
     # Check item id is an integer
     try:
