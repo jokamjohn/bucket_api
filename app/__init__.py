@@ -19,6 +19,9 @@ bcrypt = Bcrypt(app)
 # Initialize Flask Sql Alchemy
 db = SQLAlchemy(app)
 
+# Import the application views
+from app import views
+
 # Register blue prints
 from app.auth.views import auth
 
