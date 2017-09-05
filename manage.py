@@ -69,7 +69,6 @@ def cov():
 
 @manager.command
 def dummy():
-    print("Generating dummy data.....")
     # Create a user if they do not exist.
     user = User.query.filter_by(email="example@bucketmail.com").first()
     if not user:
@@ -90,8 +89,6 @@ def dummy():
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-
-    print("Done creating dummy data")
 
 
 # Run the manager
