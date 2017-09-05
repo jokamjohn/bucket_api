@@ -266,6 +266,20 @@ below:
 /bucketlists/<bucket_id>/items/<item_id>
 ```
 
+## Generating Dummy Data
+You can also generate dummy data to test out the
+different API endpoints.
+All you have to do is run this command
+
+```
+python manage.py dummy
+```
+
+A `user` with an email address of `example@bucketmail.com`
+and password `123456` is created. And also `100`
+Buckets and `1000` Bucket Items are created
+and items linked to the different Buckets.
+
 ## Running tests
 Before running the application tests, update your env variables
 ```
