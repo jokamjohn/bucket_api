@@ -7,6 +7,13 @@
 The api enables you to create/ register a user within the application.
 
 ## Usage
+- [Running the application](#Starting-the-application)
+- [Users](#Users)
+- [Buckets](#Buckets)
+- [Bucket Items](#BucketItems)
+- [Generating Dummy Data](#Generating-Dummy-Data)
+- [Running tests](#Running-tests)
+
 
 ## Starting the application
 In order to run the application set the environment
@@ -22,6 +29,8 @@ Then run the command below to start the application.
 ```
 flask run
 ```
+
+## Users
 
 ### User registration.
 Send a `POST` request to `auth/register` endpoint with the payload in
@@ -143,7 +152,7 @@ Without an Authorization header
 }
 ```
 
-## BucketList
+## Buckets
 The user is also able to create and get back a list of their buckets.
 
 ### Create Bucket
@@ -170,7 +179,7 @@ The following response will be returned
 ### Get user`s Buckets
 Below is an example of a *get* request endpoint to get the users buckets.
 An auth token must be attached in the Authorization
-header
+header. The results returned are paginated.
 ```
 /bucketlists
 ```
@@ -221,7 +230,9 @@ in a Bucket.
 
 ### Get Items from a Bucket
 Get all the items contained in the bucket by
-specifying the Bucket Id.
+specifying the Bucket Id. The results returned
+paginated.
+
 ```
 /bucketlists/<bucket_id>/items
 ```
@@ -266,7 +277,7 @@ below:
 /bucketlists/<bucket_id>/items/<item_id>
 ```
 
-## Generating Dummy Data
+## Generating dummy data
 You can also generate dummy data to test out the
 different API endpoints.
 All you have to do is run this command
