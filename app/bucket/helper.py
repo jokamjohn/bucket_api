@@ -1,6 +1,6 @@
 from flask import make_response, jsonify, url_for
 from app import app
-from app.models import User
+from app.models import Bucket
 
 
 def response_for_user_bucket(user_bucket):
@@ -75,22 +75,28 @@ def response_with_pagination(buckets, previous, nex, count):
     })), 200
 
 
-def paginate_buckets(current_user, page):
+def paginate_buckets(user_id, page, q, user):
     """
     Get a user by Id, then get hold of their buckets and also paginate the results.
+    There is also an option to search for a bucket name if the query param is set.
     Generate previous and next pagination urls
-    :param current_user: Current User
+    :param q: Query parameter
+    :param user_id: User Id
+    :param user: Current User
     :param page: Page number
     :return: Pagination next url, previous url and the user buckets.
     """
-    user = User.get_by_id(current_user.id)
-    pagination = user.buckets.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
-                                       error_out=False)
+    if q:
+        pagination = Bucket.query.filter(Bucket.name.like("%" + q.strip() + "%")).filter_by(user_id=user_id) \
+            .paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'], error_out=False)
+    else:
+        pagination = user.buckets.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
+                                           error_out=False)
     previous = None
     if pagination.has_prev:
         previous = url_for('bucket.bucketlist', page=page - 1, _external=True)
-
     nex = None
     if pagination.has_next:
         nex = url_for('bucket.bucketlist', page=page + 1, _external=True)
-    return nex, pagination, previous, pagination.items
+    items = pagination.items
+    return items, nex, pagination, previous
