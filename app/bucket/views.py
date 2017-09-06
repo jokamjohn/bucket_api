@@ -1,10 +1,8 @@
-from flask import Blueprint, request, abort, url_for
+from flask import Blueprint, request, abort
 from app.auth.helper import token_required
 from app.bucket.helper import response, response_for_created_bucket, response_for_user_bucket, response_with_pagination, \
-    get_user_bucket_json_list
+    get_user_bucket_json_list, paginate_buckets
 from app.models import User, Bucket
-from app import db, app
-from sqlalchemy import exc
 
 # Initialize blueprint
 bucket = Blueprint('bucket', __name__)
@@ -19,24 +17,11 @@ def bucketlist(current_user):
     :param current_user:
     :return:
     """
-    try:
-        page = request.args.get('page', 1, type=int)
-        user = User.query.filter_by(id=current_user.id).first()
-        pagination = user.buckets.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
-                                           error_out=False)
-        previous = None
-        if pagination.has_prev:
-            previous = url_for('bucket.bucketlist', page=page - 1, _external=True)
-        nex = None
-        if pagination.has_next:
-            nex = url_for('bucket.bucketlist', page=page + 1, _external=True)
-        user_buckets = pagination.items
-    except exc.DatabaseError as error:
-        return response('failed', 'Operation failed try again', 202)
-    else:
-        if user_buckets:
-            return response_with_pagination(get_user_bucket_json_list(user_buckets), previous, nex, pagination.total)
-        return response_with_pagination([], None, None, 0)
+    page = request.args.get('page', 1, type=int)
+    nex, pagination, previous, user_buckets = paginate_buckets(current_user, page)
+    if user_buckets:
+        return response_with_pagination(get_user_bucket_json_list(user_buckets), previous, nex, pagination.total)
+    return response_with_pagination([], previous, nex, 0)
 
 
 @bucket.route('/bucketlists', methods=['POST'])
@@ -51,12 +36,8 @@ def create_bucketlist(current_user):
         data = request.get_json()
         name = data.get('name')
         if name:
-            try:
-                user_bucket = Bucket(name, current_user.id)
-                db.session.add(user_bucket)
-                db.session.commit()
-            except exc.DatabaseError as error:
-                return response('failed', 'Operation failed, try again', 202)
+            user_bucket = Bucket(name, current_user.id)
+            user_bucket.save()
             return response_for_created_bucket(user_bucket, 201)
         return response('failed', 'Missing name attribute', 400)
     return response('failed', 'Content-type must be json', 202)
@@ -73,22 +54,25 @@ def get_bucket(current_user, bucket_id):
     """
     try:
         int(bucket_id)
-        try:
-            user = User.query.filter_by(id=current_user.id).first()
-            user_bucket = user.buckets.filter_by(id=bucket_id).first()
-        except exc.DatabaseError:
-            return response('failed', 'Operation Failed, try again', 202)
-        else:
-            if user_bucket:
-                return response_for_user_bucket(user_bucket.json())
-            return response_for_user_bucket([])
     except ValueError:
         return response('failed', 'Please provide a valid Bucket Id', 400)
+    else:
+        user_bucket = User.get_by_id(current_user.id).buckets.filter_by(id=bucket_id).first()
+        if user_bucket:
+            return response_for_user_bucket(user_bucket.json())
+        return response_for_user_bucket([])
 
 
 @bucket.route('/bucketlists/<bucket_id>', methods=['PUT'])
 @token_required
 def edit_bucket(current_user, bucket_id):
+    """
+    Validate the bucket Id. Also check for the name attribute in the json payload.
+    If the name exists update the bucket with the new name.
+    :param current_user: Current User
+    :param bucket_id: Bucket Id
+    :return: Http Json response
+    """
     if request.content_type == 'application/json':
         data = request.get_json()
         name = data.get('name')
@@ -97,13 +81,11 @@ def edit_bucket(current_user, bucket_id):
                 int(bucket_id)
             except ValueError:
                 return response('failed', 'Please provide a valid Bucket Id', 400)
-            try:
-                user = User.query.filter_by(id=current_user.id).first()
-                user_bucket = user.buckets.filter_by(id=bucket_id).first()
+            user_bucket = User.get_by_id(current_user.id).buckets.filter_by(id=bucket_id).first()
+            if user_bucket:
                 user_bucket.update(name)
-            except exc.DatabaseError as error:
-                return response('failed', 'Operation failed, try again', 202)
-            return response_for_created_bucket(user_bucket, 201)
+                return response_for_created_bucket(user_bucket, 201)
+            return response('failed', 'The Bucket with Id ' + bucket_id + ' does not exist', 404)
         return response('failed', 'No attribute or value was specified, nothing was changed', 400)
     return response('failed', 'Content-type must be json', 202)
 
@@ -119,17 +101,13 @@ def delete_bucket(current_user, bucket_id):
     """
     try:
         int(bucket_id)
-        try:
-            user = User.query.filter_by(id=current_user.id).first()
-            user_bucket = user.buckets.filter_by(id=bucket_id).first()
-            if not user_bucket:
-                abort(404)
-            user_bucket.delete()
-        except exc.DatabaseError:
-            return response('failed', 'Operation Failed, try again', 202)
-        return response('success', 'Bucket Deleted successfully', 200)
     except ValueError:
         return response('failed', 'Please provide a valid Bucket Id', 400)
+    user_bucket = User.get_by_id(current_user.id).buckets.filter_by(id=bucket_id).first()
+    if not user_bucket:
+        abort(404)
+    user_bucket.delete()
+    return response('success', 'Bucket Deleted successfully', 200)
 
 
 @bucket.errorhandler(404)

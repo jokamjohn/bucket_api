@@ -20,3 +20,13 @@ def method_not_found(e):
     :return:
     """
     return response('failed', 'The method is not allowed for the requested URL', 405)
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    """
+    Return a custom message for a 500 internal error
+    :param e: Exception
+    :return:
+    """
+    return response('failed', 'Internal server error', 500)
