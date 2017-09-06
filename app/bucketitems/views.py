@@ -119,26 +119,20 @@ def edit_item(current_user, bucket_id, item_id):
         return response('failed', 'Provide a valid item Id', 202)
 
     # Get the user Bucket
-    try:
-        bucket = get_user_bucket(current_user, bucket_id)
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
-
+    bucket = get_user_bucket(current_user, bucket_id)
     if bucket is None:
         return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
 
     # Get the item
-    try:
-        item = bucket.items.filter_by(id=item_id).first()
-        if not item:
-            abort(404)
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
+    item = bucket.items.filter_by(id=item_id).first()
+    if not item:
+        abort(404)
 
     # Check for Json data
     request_json_data = request.get_json()
     item_new_name = request_json_data.get('name')
     item_new_description = request_json_data.get('description', None)
+
     if not request_json_data:
         return response('failed', 'No attributes specified in the request', 401)
 
@@ -146,10 +140,7 @@ def edit_item(current_user, bucket_id, item_id):
         return response('failed', 'No name or value attribute found', 401)
 
     # Update the item record
-    try:
-        item.update(item_new_name, item_new_description)
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
+    item.update(item_new_name, item_new_description)
 
 
 @bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['DELETE'])
@@ -170,22 +161,15 @@ def delete(current_user, bucket_id, item_id):
         return response('failed', 'Provide a valid item Id', 202)
 
     # Get the user Bucket
-    try:
-        bucket = get_user_bucket(current_user, bucket_id)
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
-
+    bucket = get_user_bucket(current_user, bucket_id)
     if bucket is None:
         return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
 
     # Delete the item from the bucket
-    try:
-        item = bucket.items.filter_by(id=item_id).first()
-        if not item:
-            abort(404)
-        item.delete()
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
+    item = bucket.items.filter_by(id=item_id).first()
+    if not item:
+        abort(404)
+    item.delete()
     return response('success', 'Successfully deleted the item from bucket with Id ' + bucket_id, 200)
 
 
