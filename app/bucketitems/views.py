@@ -182,3 +182,13 @@ def item_not_found(e):
     :return:
     """
     return response('failed', 'Item not found', 404)
+
+
+@bucketitems.errorhandler(400)
+def bad_method(e):
+    """
+    Custom response to 400 errors.
+    :param e:
+    :return:
+    """
+    return response('failed', 'Bad request', 400)
