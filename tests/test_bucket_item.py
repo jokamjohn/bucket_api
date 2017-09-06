@@ -142,7 +142,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists/1/items',
+                '/bucketlists/1/items/',
                 data=json.dumps(dict(name='food')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -172,13 +172,17 @@ class TestBucketItem(BaseTestCase):
             self.create_bucket(token)
             self.create_item(token)
             response = self.client.get(
-                '/bucketlists/1/items',
+                '/bucketlists/1/items/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
+            print(data)
             self.assertTrue(data['status'] == 'success')
             self.assertIsInstance(data['items'], list, 'Items must be a list')
             self.assertEqual(len(data['items']), 1)
+            self.assertEqual(data['count'], 1)
+            self.assertEqual(data['next'], None)
+            self.assertEqual(data['previous'], None)
             self.assertEqual(response.status_code, 200)
 
     def test_empty_item_list_is_returned_when_no_items_in_bucket(self):
@@ -190,7 +194,7 @@ class TestBucketItem(BaseTestCase):
             token = self.get_user_token()
             self.create_bucket(token)
             response = self.client.get(
-                '/bucketlists/1/items',
+                '/bucketlists/1/items/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())

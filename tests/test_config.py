@@ -27,6 +27,7 @@ class TestDevelopmentConfig(TestCase):
                                                                            "postgresql://postgres:123456@localhost/api"))
         self.assertEqual(app.config['AUTH_TOKEN_EXPIRY_DAYS'], 1)
         self.assertEqual(app.config['AUTH_TOKEN_EXPIRY_SECONDS'], 20)
+        self.assertEqual(app.config['BUCKET_AND_ITEMS_PER_PAGE'], 4)
 
 
 class TestTestingConfig(TestCase):
@@ -53,6 +54,7 @@ class TestTestingConfig(TestCase):
         self.assertEqual(app.config['AUTH_TOKEN_EXPIRY_DAYS'], 0)
         self.assertEqual(app.config['AUTH_TOKEN_EXPIRY_SECONDS'], 3)
         self.assertEqual(app.config['AUTH_TOKEN_EXPIRATION_TIME_DURING_TESTS'], 5)
+        self.assertEqual(app.config['BUCKET_AND_ITEMS_PER_PAGE'], 3)
 
 
 if __name__ == '__main__':

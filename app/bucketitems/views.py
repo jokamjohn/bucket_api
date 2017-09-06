@@ -1,14 +1,15 @@
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, url_for
+from app import app
 from app.auth.helper import token_required
 from app.bucketitems.helper import bucket_required, response, get_user_bucket, response_with_bucket_item, \
-    response_with_bucket_items
+    response_with_pagination
 from sqlalchemy import exc
 from app.models import BucketItem
 
 bucketitems = Blueprint('items', __name__)
 
 
-@bucketitems.route('/bucketlists/<bucket_id>/items', methods=['GET'])
+@bucketitems.route('/bucketlists/<bucket_id>/items/', methods=['GET'])
 @token_required
 @bucket_required
 def get_items(current_user, bucket_id):
@@ -31,7 +32,18 @@ def get_items(current_user, bucket_id):
 
     # Get items in the bucket
     try:
-        items = bucket.items.limit(10).all()
+        page = request.args.get('page', 1, type=int)
+        pagination = bucket.items.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
+                                           error_out=False)
+        items = pagination.items
+        previous = None
+        if pagination.has_prev:
+            previous = url_for('items.get_items', bucket_id=bucket_id, page=page - 1,
+                               _external=True)
+        nex = None
+        if pagination.has_next:
+            nex = url_for('items.get_items', bucket_id=bucket_id, page=page + 1,
+                          _external=True)
     except exc.DatabaseError:
         return response('failed', 'Operation failed, try again', 202)
 
@@ -40,8 +52,8 @@ def get_items(current_user, bucket_id):
         result = []
         for item in items:
             result.append(item.json())
-        return response_with_bucket_items('success', result, 200)
-    return response_with_bucket_items('success', [], 200)
+        return response_with_pagination(result, previous, nex, pagination.total)
+    return response_with_pagination([], previous, nex, 0)
 
 
 @bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['GET'])

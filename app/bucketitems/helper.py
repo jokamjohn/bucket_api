@@ -55,18 +55,22 @@ def response_with_bucket_item(status, item, status_code):
     })), status_code
 
 
-def response_with_bucket_items(status, items, status_code):
+def response_with_pagination(items, previous, nex, count):
     """
-    Http response for response with a bucket item.
-    :param items: List of Items
-    :param status: Status Message
-    :param status_code: Http Status Code
-    :return:
+    Get the Bucket items with the result paginated
+    :param items: Items within the Bucket
+    :param previous: Url to previous page if it exists
+    :param nex: Url to next page if it exists
+    :param count: Pagination total
+    :return: Http Json response
     """
     return make_response(jsonify({
-        'status': status,
+        'status': 'success',
+        'previous': previous,
+        'next': nex,
+        'count': count,
         'items': items
-    })), status_code
+    })), 200
 
 
 def get_user_bucket(current_user, bucket_id):

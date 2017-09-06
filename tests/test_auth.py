@@ -216,7 +216,7 @@ class TestAuthBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists',
+                '/bucketlists/',
                 headers=dict(Authorization='Bearerfgghjkljkhjvhbjn')
             )
             data = json.loads(response.data.decode())
@@ -232,7 +232,7 @@ class TestAuthBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists'
+                '/bucketlists/'
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 401)
@@ -242,7 +242,7 @@ class TestAuthBluePrint(BaseTestCase):
     def test_token_required_method_invalid_authorization_token(self):
         with self.client:
             response = self.client.get(
-                '/bucketlists',
+                '/bucketlists/',
                 headers=dict(Authorization='Bearer fgghjkljkhjvhbjn.sdfsdgfgfg')
             )
             data = json.loads(response.data.decode())
@@ -263,7 +263,7 @@ class TestAuthBluePrint(BaseTestCase):
             self.logout_user(token)
             # Send a Get request to bucketlists endpoint
             response = self.client.get(
-                '/bucketlists',
+                '/bucketlists/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -280,7 +280,7 @@ class TestAuthBluePrint(BaseTestCase):
             time.sleep(self.app.config['AUTH_TOKEN_EXPIRATION_TIME_DURING_TESTS'])
             # Send a Get request to bucketlists endpoint
             response = self.client.get(
-                '/bucketlists',
+                '/bucketlists/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())

@@ -55,13 +55,19 @@ def get_user_bucket_json_list(user_buckets):
     return buckets
 
 
-def get_response(buckets):
+def response_with_pagination(buckets, previous, nex, count):
     """
     Make a http response for BucketList get requests.
+    :param count: Pagination Total
+    :param nex: Next page Url if it exists
+    :param previous: Previous page Url if it exists
     :param buckets: Bucket
-    :return:
+    :return: Http Json response
     """
     return make_response(jsonify({
         'status': 'success',
+        'previous': previous,
+        'next': nex,
+        'count': count,
         'buckets': buckets
     })), 200

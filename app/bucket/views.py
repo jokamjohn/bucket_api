@@ -1,16 +1,16 @@
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, url_for
 from app.auth.helper import token_required
-from app.bucket.helper import response, response_for_created_bucket, response_for_user_bucket, get_response, \
+from app.bucket.helper import response, response_for_created_bucket, response_for_user_bucket, response_with_pagination, \
     get_user_bucket_json_list
 from app.models import User, Bucket
-from app import db
+from app import db, app
 from sqlalchemy import exc
 
 # Initialize blueprint
 bucket = Blueprint('bucket', __name__)
 
 
-@bucket.route('/bucketlists', methods=['GET'])
+@bucket.route('/bucketlists/', methods=['GET'])
 @token_required
 def bucketlist(current_user):
     """
@@ -20,14 +20,23 @@ def bucketlist(current_user):
     :return:
     """
     try:
+        page = request.args.get('page', 1, type=int)
         user = User.query.filter_by(id=current_user.id).first()
-        user_buckets = user.buckets.limit(10).all()
+        pagination = user.buckets.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
+                                           error_out=False)
+        previous = None
+        if pagination.has_prev:
+            previous = url_for('bucket.bucketlist', page=page - 1, _external=True)
+        nex = None
+        if pagination.has_next:
+            nex = url_for('bucket.bucketlist', page=page + 1, _external=True)
+        user_buckets = pagination.items
     except exc.DatabaseError as error:
         return response('failed', 'Operation failed try again', 202)
     else:
         if user_buckets:
-            return get_response(get_user_bucket_json_list(user_buckets))
-        return get_response({})
+            return response_with_pagination(get_user_bucket_json_list(user_buckets), previous, nex, pagination.total)
+        return response_with_pagination([], None, None, 0)
 
 
 @bucket.route('/bucketlists', methods=['POST'])
