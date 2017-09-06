@@ -80,6 +80,15 @@ class User(db.Model):
         """
         return User.query.filter_by(id=user_id).first()
 
+    @staticmethod
+    def get_by_email(email):
+        """
+        Check a user by their email address
+        :param email:
+        :return:
+        """
+        return User.query.filter_by(email=email).first()
+
 
 class BlackListToken(db.Model):
     """

@@ -23,13 +23,8 @@ class RegisterUser(MethodView):
             post_data = request.get_json()
             email = post_data.get('email')
             password = post_data.get('password')
-            # TODO refactor validation to helpers
-            # TODO 404, 401 routes to auth
             if re.match(r"[^@]+@[^@]+\.[^@]+", email) and len(password) > 4:
-                try:
-                    user = User.query.filter_by(email=email).first()
-                except exc.DatabaseError:
-                    return response('failed', 'Operation failed', 202)
+                user = User.get_by_email(email)
                 if not user:
                     token = User(email=email, password=password).save()
                     return response_auth('success', 'Successfully registered', token, 201)
@@ -50,13 +45,9 @@ class LoginUser(MethodView):
             email = post_data.get('email')
             password = post_data.get('password')
             if re.match(r"[^@]+@[^@]+\.[^@]+", email) and len(password) > 4:
-                try:
-                    user = User.query.filter_by(email=email).first()
-                except exc.DatabaseError:
-                    response('failed', 'Operation failed', 202)
+                user = User.query.filter_by(email=email).first()
                 if user and bcrypt.check_password_hash(user.password, password):
-                    token = user.encode_auth_token(user.id)
-                    return response_auth('success', 'Successfully logged In', token, 200)
+                    return response_auth('success', 'Successfully logged In', user.encode_auth_token(user.id), 200)
                 return response('failed', 'User does not exist or password is incorrect', 401)
             return response('failed', 'Missing or wrong email format or password is less than four characters', 401)
         return response('failed', 'Content-type must be json', 202)
@@ -81,12 +72,9 @@ class LogOutUser(MethodView):
             else:
                 decoded_token_response = User.decode_auth_token(auth_token)
                 if not isinstance(decoded_token_response, str):
-                    try:
-                        token = BlackListToken(auth_token)
-                        token.blacklist()
-                        return response('success', 'Successfully logged out', 200)
-                    except exc.DatabaseError:
-                        return response('failed', 'Operation Failed', 202)
+                    token = BlackListToken(auth_token)
+                    token.blacklist()
+                    return response('success', 'Successfully logged out', 200)
                 return response('failed', decoded_token_response, 401)
         return response('failed', 'Provide an authorization header', 403)
 
