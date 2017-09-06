@@ -142,6 +142,7 @@ def edit_item(current_user, bucket_id, item_id):
 
     # Update the item record
     item.update(item_new_name, item_new_description)
+    return response_with_bucket_item('success', item, 200)
 
 
 @bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['DELETE'])
