@@ -54,17 +54,13 @@ def get_bucket(current_user, bucket_id):
     """
     try:
         int(bucket_id)
-        try:
-            user = User.query.filter_by(id=current_user.id).first()
-            user_bucket = user.buckets.filter_by(id=bucket_id).first()
-        except exc.DatabaseError:
-            return response('failed', 'Operation Failed, try again', 202)
-        else:
-            if user_bucket:
-                return response_for_user_bucket(user_bucket.json())
-            return response_for_user_bucket([])
     except ValueError:
         return response('failed', 'Please provide a valid Bucket Id', 400)
+    else:
+        user_bucket = User.get_by_id(current_user.id).buckets.filter_by(id=bucket_id).first()
+        if user_bucket:
+            return response_for_user_bucket(user_bucket.json())
+        return response_for_user_bucket([])
 
 
 @bucket.route('/bucketlists/<bucket_id>', methods=['PUT'])
