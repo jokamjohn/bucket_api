@@ -1,4 +1,4 @@
-from flask import Blueprint, request, abort, url_for
+from flask import Blueprint, request, abort
 from app.auth.helper import token_required
 from app.bucket.helper import response, response_for_created_bucket, response_for_user_bucket, response_with_pagination, \
     get_user_bucket_json_list, paginate_buckets
@@ -37,7 +37,8 @@ def create_bucketlist(current_user):
         data = request.get_json()
         name = data.get('name')
         if name:
-            user_bucket = Bucket(name, current_user.id).save()
+            user_bucket = Bucket(name, current_user.id)
+            user_bucket.save()
             return response_for_created_bucket(user_bucket, 201)
         return response('failed', 'Missing name attribute', 400)
     return response('failed', 'Content-type must be json', 202)
@@ -66,6 +67,13 @@ def get_bucket(current_user, bucket_id):
 @bucket.route('/bucketlists/<bucket_id>', methods=['PUT'])
 @token_required
 def edit_bucket(current_user, bucket_id):
+    """
+    Validate the bucket Id. Also check for the name attribute in the json payload.
+    If the name exists update the bucket with the new name.
+    :param current_user: Current User
+    :param bucket_id: Bucket Id
+    :return: Http Json response
+    """
     if request.content_type == 'application/json':
         data = request.get_json()
         name = data.get('name')
@@ -74,13 +82,11 @@ def edit_bucket(current_user, bucket_id):
                 int(bucket_id)
             except ValueError:
                 return response('failed', 'Please provide a valid Bucket Id', 400)
-            try:
-                user = User.query.filter_by(id=current_user.id).first()
-                user_bucket = user.buckets.filter_by(id=bucket_id).first()
+            user_bucket = User.get_by_id(current_user.id).buckets.filter_by(id=bucket_id).first()
+            if user_bucket:
                 user_bucket.update(name)
-            except exc.DatabaseError as error:
-                return response('failed', 'Operation failed, try again', 202)
-            return response_for_created_bucket(user_bucket, 201)
+                return response_for_created_bucket(user_bucket, 201)
+            return response('failed', 'The Bucket with Id ' + bucket_id + ' does not exist', 404)
         return response('failed', 'No attribute or value was specified, nothing was changed', 400)
     return response('failed', 'Content-type must be json', 202)
 

@@ -94,6 +94,7 @@ class TestBucketBluePrint(BaseTestCase):
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
             )
+            print(response.data)
             # Test Bucket creation
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 201)
@@ -174,6 +175,27 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['name'] == 'Adventure')
             self.assertEqual(data['id'], 1)
+
+    def test_id_of_bucket_to_be_edited_does_not_exist(self):
+        """
+        Test the bucket to be updated does not exist.
+        :return:
+        """
+        with self.client:
+            # Get an auth token
+            token = self.get_user_token()
+            # Update the bucket name
+            res = self.client.put(
+                '/bucketlists/1',
+                headers=dict(Authorization='Bearer ' + token),
+                data=json.dumps(dict(name='Adventure')),
+                content_type='application/json'
+            )
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 404)
+            self.assertTrue(res.content_type == 'application/json')
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'The Bucket with Id 1 does not exist')
 
     def test_content_type_for_editing_bucket_is_json(self):
         """
