@@ -3,7 +3,6 @@ from app.auth.helper import token_required
 from app.bucket.helper import response, response_for_created_bucket, response_for_user_bucket, response_with_pagination, \
     get_user_bucket_json_list, paginate_buckets
 from app.models import User, Bucket
-from sqlalchemy import exc
 
 # Initialize blueprint
 bucket = Blueprint('bucket', __name__)
@@ -102,17 +101,13 @@ def delete_bucket(current_user, bucket_id):
     """
     try:
         int(bucket_id)
-        try:
-            user = User.query.filter_by(id=current_user.id).first()
-            user_bucket = user.buckets.filter_by(id=bucket_id).first()
-            if not user_bucket:
-                abort(404)
-            user_bucket.delete()
-        except exc.DatabaseError:
-            return response('failed', 'Operation Failed, try again', 202)
-        return response('success', 'Bucket Deleted successfully', 200)
     except ValueError:
         return response('failed', 'Please provide a valid Bucket Id', 400)
+    user_bucket = User.get_by_id(current_user.id).buckets.filter_by(id=bucket_id).first()
+    if not user_bucket:
+        abort(404)
+    user_bucket.delete()
+    return response('success', 'Bucket Deleted successfully', 200)
 
 
 @bucket.errorhandler(404)

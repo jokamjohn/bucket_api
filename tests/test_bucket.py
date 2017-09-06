@@ -94,7 +94,6 @@ class TestBucketBluePrint(BaseTestCase):
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
             )
-            print(response.data)
             # Test Bucket creation
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 201)
