@@ -81,8 +81,7 @@ def get_user_bucket(current_user, bucket_id):
     :param current_user: User
     :return:
     """
-    user = User.query.filter_by(id=current_user.id).first()
-    user_bucket = user.buckets.filter_by(id=bucket_id).first()
+    user_bucket = User.get_by_id(current_user.id).buckets.filter_by(id=bucket_id).first()
     return user_bucket
 
 

@@ -87,20 +87,13 @@ def post(current_user, bucket_id):
         return response('failed', 'No name or value attribute found', 401)
 
     # Get the user Bucket
-    try:
-        bucket = get_user_bucket(current_user, bucket_id)
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
-
+    bucket = get_user_bucket(current_user, bucket_id)
     if bucket is None:
         return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
 
     # Save the Bucket Item into the Database
     item = BucketItem(item_name, data.get('description', None), bucket.id)
-    try:
-        item.save()
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
+    item.save()
     return response_with_bucket_item('success', item, 200)
 
 
