@@ -142,6 +142,7 @@ def edit_item(current_user, bucket_id, item_id):
 
     # Update the item record
     item.update(item_new_name, item_new_description)
+    return response_with_bucket_item('success', item, 200)
 
 
 @bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['DELETE'])
@@ -182,3 +183,13 @@ def item_not_found(e):
     :return:
     """
     return response('failed', 'Item not found', 404)
+
+
+@bucketitems.errorhandler(400)
+def bad_method(e):
+    """
+    Custom response to 400 errors.
+    :param e:
+    :return:
+    """
+    return response('failed', 'Bad request', 400)
