@@ -17,10 +17,14 @@ def bucketlist(current_user):
     :param current_user:
     :return:
     """
+    user = User.get_by_id(current_user.id)
     page = request.args.get('page', 1, type=int)
-    nex, pagination, previous, user_buckets = paginate_buckets(current_user, page)
-    if user_buckets:
-        return response_with_pagination(get_user_bucket_json_list(user_buckets), previous, nex, pagination.total)
+    q = request.args.get('q', None, type=str)
+
+    items, nex, pagination, previous = paginate_buckets(current_user.id, page, q, user)
+
+    if items:
+        return response_with_pagination(get_user_bucket_json_list(items), previous, nex, pagination.total)
     return response_with_pagination([], previous, nex, 0)
 
 
