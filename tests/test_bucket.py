@@ -52,13 +52,18 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists',
+                '/bucketlists/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertTrue(data['status'] == 'success')
-            self.assertIsInstance(data['buckets'], dict)
+            self.assertIsInstance(data['buckets'], list)
+            self.assertEqual(len(data['buckets']), 0)
+            self.assertEqual(data['count'], 0)
+            self.assertIsInstance(data['count'], int)
+            self.assertEqual(data['previous'], None)
+            self.assertEqual(data['next'], None)
 
     def test_request_for_a_bucket_has_integer_id(self):
         """

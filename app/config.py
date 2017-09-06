@@ -15,6 +15,7 @@ class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     AUTH_TOKEN_EXPIRY_DAYS = 30
     AUTH_TOKEN_EXPIRY_SECONDS = 3000
+    BUCKET_AND_ITEMS_PER_PAGE = 25
 
 
 class DevelopmentConfig(BaseConfig):
@@ -26,6 +27,7 @@ class DevelopmentConfig(BaseConfig):
     BCRYPT_HASH_PREFIX = 4
     AUTH_TOKEN_EXPIRY_DAYS = 1
     AUTH_TOKEN_EXPIRY_SECONDS = 20
+    BUCKET_AND_ITEMS_PER_PAGE = 4
 
 
 class TestingConfig(BaseConfig):
@@ -39,3 +41,4 @@ class TestingConfig(BaseConfig):
     AUTH_TOKEN_EXPIRY_DAYS = 0
     AUTH_TOKEN_EXPIRY_SECONDS = 3
     AUTH_TOKEN_EXPIRATION_TIME_DURING_TESTS = 5
+    BUCKET_AND_ITEMS_PER_PAGE = 3
