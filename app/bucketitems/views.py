@@ -1,8 +1,7 @@
-from flask import Blueprint, request, abort, url_for
-from app import app
+from flask import Blueprint, request, abort
 from app.auth.helper import token_required
 from app.bucketitems.helper import bucket_required, response, get_user_bucket, response_with_bucket_item, \
-    response_with_pagination
+    response_with_pagination, get_paginated_items
 from sqlalchemy import exc
 from app.models import BucketItem
 
@@ -22,33 +21,16 @@ def get_items(current_user, bucket_id):
     :return: List of Items
     """
     # Get the user Bucket
-    try:
-        bucket = get_user_bucket(current_user, bucket_id)
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
-
+    bucket = get_user_bucket(current_user, bucket_id)
     if bucket is None:
         return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
 
     # Get items in the bucket
-    try:
-        page = request.args.get('page', 1, type=int)
-        pagination = bucket.items.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
-                                           error_out=False)
-        items = pagination.items
-        previous = None
-        if pagination.has_prev:
-            previous = url_for('items.get_items', bucket_id=bucket_id, page=page - 1,
-                               _external=True)
-        nex = None
-        if pagination.has_next:
-            nex = url_for('items.get_items', bucket_id=bucket_id, page=page + 1,
-                          _external=True)
-    except exc.DatabaseError:
-        return response('failed', 'Operation failed, try again', 202)
+    page = request.args.get('page', 1, type=int)
+    items, nex, pagination, previous = get_paginated_items(bucket, bucket_id, page)
 
+    # Make a list of items
     if items:
-        # Make a list of items
         result = []
         for item in items:
             result.append(item.json())
