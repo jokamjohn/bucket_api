@@ -71,6 +71,15 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             return 'Invalid token. Please sign in again'
 
+    @staticmethod
+    def get_by_id(user_id):
+        """
+        Filter a user by Id.
+        :param user_id:
+        :return: User or None
+        """
+        return User.query.filter_by(id=user_id).first()
+
 
 class BlackListToken(db.Model):
     """

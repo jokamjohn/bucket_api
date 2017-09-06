@@ -1,4 +1,6 @@
-from flask import make_response, jsonify
+from flask import make_response, jsonify, url_for
+from app import app
+from app.models import User
 
 
 def response_for_user_bucket(user_bucket):
@@ -71,3 +73,24 @@ def response_with_pagination(buckets, previous, nex, count):
         'count': count,
         'buckets': buckets
     })), 200
+
+
+def paginate_buckets(current_user, page):
+    """
+    Get a user by Id, then get hold of their buckets and also paginate the results.
+    Generate previous and next pagination urls
+    :param current_user: Current User
+    :param page: Page number
+    :return: Pagination next url, previous url and the user buckets.
+    """
+    user = User.get_by_id(current_user.id)
+    pagination = user.buckets.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
+                                       error_out=False)
+    previous = None
+    if pagination.has_prev:
+        previous = url_for('bucket.bucketlist', page=page - 1, _external=True)
+
+    nex = None
+    if pagination.has_next:
+        nex = url_for('bucket.bucketlist', page=page + 1, _external=True)
+    return nex, pagination, previous, pagination.items
