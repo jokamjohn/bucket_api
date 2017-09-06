@@ -27,7 +27,8 @@ def get_items(current_user, bucket_id):
 
     # Get items in the bucket
     page = request.args.get('page', 1, type=int)
-    items, nex, pagination, previous = get_paginated_items(bucket, bucket_id, page)
+    q = request.args.get('q', None, type=str)
+    items, nex, pagination, previous = get_paginated_items(bucket, bucket_id, page, q)
 
     # Make a list of items
     if items:

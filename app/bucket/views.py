@@ -28,10 +28,6 @@ def bucketlist(current_user):
     return response_with_pagination([], previous, nex, 0)
 
 
-
-
-
-
 @bucket.route('/bucketlists', methods=['POST'])
 @token_required
 def create_bucketlist(current_user):

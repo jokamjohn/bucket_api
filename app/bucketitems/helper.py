@@ -1,7 +1,7 @@
 from flask import jsonify, make_response, request, url_for
 from app import app
 from functools import wraps
-from app.models import User
+from app.models import User, BucketItem
 
 
 def bucket_required(f):
@@ -85,17 +85,25 @@ def get_user_bucket(current_user, bucket_id):
     return user_bucket
 
 
-def get_paginated_items(bucket, bucket_id, page):
+def get_paginated_items(bucket, bucket_id, page, q):
     """
     Get the items from the bucket and then paginate the results.
+    Items can also be search when the query parameter is set.
     Construct the previous and next urls.
+    :param q: Query parameter
     :param bucket: Bucket
     :param bucket_id: Bucket Id
     :param page: Page number
     :return:
     """
-    pagination = bucket.items.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
-                                       error_out=False)
+
+    if q:
+        pagination = BucketItem.query.filter(BucketItem.name.like("%" + q.strip() + "%")) \
+            .filter_by(bucket_id=bucket_id) \
+            .paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'], error_out=False)
+    else:
+        pagination = bucket.items.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
+                                           error_out=False)
     previous = None
     if pagination.has_prev:
         previous = url_for('items.get_items', bucket_id=bucket_id, page=page - 1, _external=True)
