@@ -7,12 +7,12 @@
 The api enables you to create/ register a user within the application.
 
 ## Usage
-- [Running the application](#Starting-the-application)
-- [Users](#Users)
-- [Buckets](#Buckets)
-- [Bucket Items](#BucketItems)
-- [Generating Dummy Data](#Generating-Dummy-Data)
-- [Running tests](#Running-tests)
+- [Running the application](#starting-the-application)
+- [Users](#users)
+- [Buckets](#buckets)
+- [Bucket Items](#bucketitems)
+- [Generating Dummy Data](#generating-dummy-data)
+- [Running tests](#running-tests)
 
 
 ## Starting the application
