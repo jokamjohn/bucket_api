@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 
 # Initialize application
-app = Flask(__name__)
+app = Flask(__name__, static_folder=None)
 
 # app configuration
 app_settings = os.getenv(
@@ -34,3 +34,7 @@ app.register_blueprint(bucket)
 from app.bucketitems.views import bucketitems
 
 app.register_blueprint(bucketitems)
+
+from app.docs.views import docs
+
+app.register_blueprint(docs)
