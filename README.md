@@ -8,6 +8,7 @@ The api enables you to create/ register a user within the application.
 
 ## Usage
 - [Running the application](#starting-the-application)
+- [API Documentation](#api-documentation)
 - [Users](#users)
 - [Buckets](#buckets)
 - [Bucket Items](#bucketitems)
@@ -29,6 +30,11 @@ Then run the command below to start the application.
 ```
 flask run
 ```
+
+## API Documentation
+
+The api documentation is hosted as the homepage
+of the application.
 
 ## Users
 
