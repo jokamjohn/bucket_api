@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="apple-touch-icon" sizes="76x76"
+          href="{{ url_for('docs.static', filename="favicon/apple-touch-icon.png") }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="{{ url_for('docs.static', filename="favicon/favicon-32x32.png") }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="{{ url_for('docs.static', filename="favicon/favicon-16x16.png") }}">
+    <link rel="manifest" href="{{ url_for('docs.static', filename="favicon/manifest.json") }}">
+    <link rel="mask-icon" href="{{ url_for('docs.static', filename="favicon/safari-pinned-tab.svg") }}" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>BucketList API Documentation</title>
+</head>
+<body>
+
+<div class="container" id="documentation">
+
+</div>
+
+<script src="https://api.apiary.io/seeds/embed.js"></script>
+<script src="{{ url_for('docs.static', filename='js/apiary.js') }}"></script>
+</body>
+</html>
