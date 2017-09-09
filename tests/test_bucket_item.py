@@ -176,7 +176,6 @@ class TestBucketItem(BaseTestCase):
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
-            print(data)
             self.assertTrue(data['status'] == 'success')
             self.assertIsInstance(data['items'], list, 'Items must be a list')
             self.assertEqual(len(data['items']), 1)

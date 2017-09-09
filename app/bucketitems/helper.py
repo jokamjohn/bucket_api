@@ -13,12 +13,7 @@ def bucket_required(f):
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not request.view_args:
-            return response('failed', 'Request is missing required parameters', 401)
-
         bucket_id_ = request.view_args['bucket_id']
-        if not bucket_id_:
-            return response('failed', 'Request is missing the Bucket Id parameter', 401)
         try:
             int(bucket_id_)
         except ValueError:
