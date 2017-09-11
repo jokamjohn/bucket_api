@@ -42,3 +42,15 @@ class TestingConfig(BaseConfig):
     AUTH_TOKEN_EXPIRY_SECONDS = 3
     AUTH_TOKEN_EXPIRATION_TIME_DURING_TESTS = 5
     BUCKET_AND_ITEMS_PER_PAGE = 3
+
+
+class ProductionConfig(BaseConfig):
+    """
+    Production application configuration
+    """
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', postgres_local_base + database_name)
+    BCRYPT_HASH_PREFIX = 13
+    AUTH_TOKEN_EXPIRY_DAYS = 30
+    AUTH_TOKEN_EXPIRY_SECONDS = 20
+    BUCKET_AND_ITEMS_PER_PAGE = 10
