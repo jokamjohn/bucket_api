@@ -26,6 +26,15 @@ class TestMainAppCase(BaseTestCase):
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'The method is not allowed for the requested URL')
 
+    def test_home_page(self):
+        """
+        Test that the homepage returns a 200 response status code
+        :return:
+        """
+        with self.client:
+            response = self.client.get('/')
+            self.assert200(response)
+
 
 if __name__ == "__main__":
     unittest.main()
