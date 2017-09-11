@@ -8,6 +8,7 @@ The api enables you to create/ register a user within the application.
 
 ## Usage
 - [Running the application](#starting-the-application)
+- [Live Application](#live-application)
 - [API Documentation](#api-documentation)
 - [Users](#users)
 - [Buckets](#buckets)
@@ -30,6 +31,9 @@ Then run the command below to start the application.
 ```
 flask run
 ```
+
+## Live Application
+This API is hosted [here](http://kbucket-api.herokuapp.com) on [heroku](heroku.com)
 
 ## API Documentation
 
