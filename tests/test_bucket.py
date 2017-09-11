@@ -110,6 +110,24 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertIsInstance(data['bucket'], dict)
             self.assertTrue(response.content_type == 'application/json')
 
+    def test_no_bucket_returned_by_given_id(self):
+        """
+        Test there is no bucket/no bucket returned with given Id
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+
+            response = self.client.get(
+                '/bucketlists/1',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['status'] == 'success')
+            self.assertIsInstance(data['bucket'], list)
+            self.assertTrue(response.content_type == 'application/json')
+
     def test_deletion_handles_no_bucket_found_by_id(self):
         """
         Show tha a 404 response is returned when an un existing bucket is being deleted.
@@ -195,6 +213,27 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertTrue(res.content_type == 'application/json')
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'The Bucket with Id 1 does not exist')
+
+    def test_id_of_bucket_to_be_edited_is_invalid(self):
+        """
+        Test the bucket id is invalid.
+        :return:
+        """
+        with self.client:
+            # Get an auth token
+            token = self.get_user_token()
+            # Update the bucket name
+            res = self.client.put(
+                '/bucketlists/bucketid',
+                headers=dict(Authorization='Bearer ' + token),
+                data=json.dumps(dict(name='Adventure')),
+                content_type='application/json'
+            )
+            data = json.loads(res.data.decode())
+            self.assertEqual(res.status_code, 400)
+            self.assertTrue(res.content_type == 'application/json')
+            self.assertTrue(data['status'] == 'failed')
+            self.assertTrue(data['message'] == 'Please provide a valid Bucket Id')
 
     def test_content_type_for_editing_bucket_is_json(self):
         """
