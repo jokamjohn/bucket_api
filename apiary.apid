@@ -1,4 +1,5 @@
 FORMAT: 1A
+HOST: http://kbucket-api.herokuapp.com
 
 
 # BucketList
