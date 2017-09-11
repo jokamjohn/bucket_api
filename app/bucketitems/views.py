@@ -93,7 +93,7 @@ def post(current_user, bucket_id):
         return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
 
     # Save the Bucket Item into the Database
-    item = BucketItem(item_name, data.get('description', None), bucket.id)
+    item = BucketItem(item_name.lower(), data.get('description', None), bucket.id)
     item.save()
     return response_with_bucket_item('success', item, 200)
 

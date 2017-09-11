@@ -93,7 +93,7 @@ def get_paginated_items(bucket, bucket_id, page, q):
     """
 
     if q:
-        pagination = BucketItem.query.filter(BucketItem.name.like("%" + q.strip() + "%")) \
+        pagination = BucketItem.query.filter(BucketItem.name.like("%" + q.lower().strip() + "%")) \
             .filter_by(bucket_id=bucket_id) \
             .paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'], error_out=False)
     else:
