@@ -176,13 +176,63 @@ class TestBucketItem(BaseTestCase):
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
-            print(data)
             self.assertTrue(data['status'] == 'success')
             self.assertIsInstance(data['items'], list, 'Items must be a list')
             self.assertEqual(len(data['items']), 1)
             self.assertEqual(data['count'], 1)
             self.assertEqual(data['next'], None)
             self.assertEqual(data['previous'], None)
+            self.assertEqual(response.status_code, 200)
+
+    def test_items_returned_when_searched(self):
+        """
+        Test Bucket Items are returned when a query search q is present in the url
+        Also test that the next page pagination string is 'http://localhost/bucketlists/1/items/?page=2'
+        and previous is none
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_bucket(token)
+            self.create_items(token)
+            response = self.client.get(
+                '/bucketlists/1/items/?q=f',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertIsInstance(data['items'], list, 'Items must be a list')
+            self.assertEqual(len(data['items']), 3)
+            self.assertEqual(data['items'][0]['bucketId'], 1)
+            self.assertEqual(data['items'][0]['id'], 1)
+            self.assertEqual(data['count'], 6)
+            self.assertEqual(data['next'], 'http://localhost/bucketlists/1/items/?page=2')
+            self.assertEqual(data['previous'], None)
+            self.assertEqual(response.status_code, 200)
+
+    def test_items_returned_when_searched_2(self):
+        """
+        Test Bucket Items are returned when a query search q is present in the url
+        Also test that the next page pagination is none and previous 'http://localhost/bucketlists/1/items/?page=1'
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_bucket(token)
+            self.create_items(token)
+            response = self.client.get(
+                '/bucketlists/1/items/?q=f&page=2',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertIsInstance(data['items'], list, 'Items must be a list')
+            self.assertEqual(len(data['items']), 3)
+            self.assertEqual(data['items'][0]['bucketId'], 1)
+            self.assertEqual(data['items'][0]['id'], 4)
+            self.assertEqual(data['count'], 6)
+            self.assertEqual(data['next'], None)
+            self.assertEqual(data['previous'], 'http://localhost/bucketlists/1/items/?page=1')
             self.assertEqual(response.status_code, 200)
 
     def test_empty_item_list_is_returned_when_no_items_in_bucket(self):
@@ -331,6 +381,33 @@ class TestBucketItem(BaseTestCase):
         self.assertTrue(data['item']['name'] == 'food')
         self.assertTrue(data['item']['description'] == 'Enjoying the good life')
         self.assertEqual(response.status_code, 200)
+
+    def create_items(self, token):
+        """
+        Create an item into a bucket
+        :param token:
+        :return:
+        """
+        items = [
+            {'name': 'food', 'description': 'Enjoying the good life'},
+            {'name': 'fod', 'description': 'Enjoying the good life'},
+            {'name': 'foood', 'description': 'Enjoying the good life'},
+            {'name': 'foda', 'description': 'Enjoying the good life'},
+            {'name': 'fd', 'description': 'Enjoying the good life'},
+            {'name': 'foodad', 'description': 'Enjoying the good life'},
+        ]
+        for item in items:
+            response = self.client.post(
+                '/bucketlists/1/items',
+                data=json.dumps(dict(name=item['name'], description=item['description'])),
+                content_type='application/json',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertTrue(data['item']['name'] == item['name'])
+            self.assertTrue(data['item']['description'] == item['description'])
+            self.assertEqual(response.status_code, 200)
 
     def test_item_to_be_deleted_does_not_exist(self):
         """

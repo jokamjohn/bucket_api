@@ -311,9 +311,7 @@ python manage.py test
 ```
 
 ### Running tests with coverage
-You can also run tests with coverage
+You can also run tests with coverage by running this command in the terminal
 ```
-python manage.py cov
+nosetests --with-coverage --cover-package=app
 ```
-After the tests have run the coverage report will be opened in your
-default browser where you can see the results.

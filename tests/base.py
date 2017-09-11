@@ -62,3 +62,29 @@ class BaseTestCase(TestCase):
         self.assertTrue(data['status'], 'success')
         self.assertTrue(data['name'], 'Travel')
         self.assertIsInstance(data['id'], int, msg='Value should be a string')
+
+    def create_buckets(self, token):
+        """
+        Helper function to create a bucket
+        :return:
+        """
+        buckets = [
+            {'name': 'Travel'},
+            {'name': 'Tral'},
+            {'name': 'Trvel'},
+            {'name': 'Tavel'},
+            {'name': 'Travl'},
+            {'name': 'Trave'},
+        ]
+        for bucket in buckets:
+            response = self.client.post(
+                '/bucketlists',
+                data=json.dumps(dict(name=bucket['name'])),
+                headers=dict(Authorization='Bearer ' + token),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+            self.assertTrue(data['status'], 'success')
+            self.assertTrue(data['name'], bucket['name'])
+            self.assertIsInstance(data['id'], int, msg='Value should be a string')

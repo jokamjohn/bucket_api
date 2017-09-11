@@ -19,7 +19,7 @@ before_script:
   - python manage.py db upgrade
 
 script:
-  - python manage.py cov
+  - nosetests --with-coverage --cover-package=app
 
 after_script:
   - coveralls

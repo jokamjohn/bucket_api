@@ -46,28 +46,6 @@ def test():
 
 
 @manager.command
-def cov():
-    """
-    Run tests with coverage
-    :return:
-    """
-    tests = unittest.TestLoader().discover('tests', pattern='test*.py')
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        COV.stop()
-        COV.save()
-        print('Coverage Report')
-        COV.report()
-        basedir = os.path.abspath(os.path.dirname(__file__))
-        covdir = os.path.join(basedir, 'tmp/coverage')
-        COV.html_report(directory=covdir)
-        print('HTML version: file://%s/index.html' % covdir)
-        COV.erase()
-        return 0
-    return 1
-
-
-@manager.command
 def dummy():
     # Create a user if they do not exist.
     user = User.query.filter_by(email="example@bucketmail.com").first()

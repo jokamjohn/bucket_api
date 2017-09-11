@@ -13,12 +13,7 @@ def bucket_required(f):
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not request.view_args:
-            return response('failed', 'Request is missing required parameters', 401)
-
         bucket_id_ = request.view_args['bucket_id']
-        if not bucket_id_:
-            return response('failed', 'Request is missing the Bucket Id parameter', 401)
         try:
             int(bucket_id_)
         except ValueError:
@@ -98,7 +93,7 @@ def get_paginated_items(bucket, bucket_id, page, q):
     """
 
     if q:
-        pagination = BucketItem.query.filter(BucketItem.name.like("%" + q.strip() + "%")) \
+        pagination = BucketItem.query.filter(BucketItem.name.like("%" + q.lower().strip() + "%")) \
             .filter_by(bucket_id=bucket_id) \
             .paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'], error_out=False)
     else:
