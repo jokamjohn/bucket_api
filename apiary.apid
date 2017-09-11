@@ -140,7 +140,7 @@ auth token will then be invalidated.
           "status": "failed"
         }
 
-## Bucket Resources [/bucketlists/{?page}/{?q}]
+## Bucket Resources [/bucketlists{?page}{?q}]
 
 You can create, read, update and delete buckets.
 
