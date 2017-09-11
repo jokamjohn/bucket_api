@@ -106,7 +106,7 @@ class TestBucketBluePrint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertTrue(data['status'] == 'success')
-            self.assertTrue(data['bucket']['name'] == 'Travel')
+            self.assertTrue(data['bucket']['name'] == 'travel')
             self.assertIsInstance(data['bucket'], dict)
             self.assertTrue(response.content_type == 'application/json')
 
@@ -239,7 +239,6 @@ class TestBucketBluePrint(BaseTestCase):
         with self.client:
             # Get an auth token
             token = self.get_user_token()
-            # Create a Bucket
             response = self.client.post(
                 '/bucketlists',
                 data=json.dumps(dict(name='Travel')),
@@ -278,6 +277,55 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertEqual(res.status_code, 400)
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'Bad Request')
+
+    def test_buckets_returned_when_searched(self):
+        """
+        Test Buckets are returned when a query search q is present in the url
+        Also test that the next page pagination string is 'http://localhost/bucketlists/1/items/?page=2'
+        and previous is none
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_buckets(token)
+            response = self.client.get(
+                '/bucketlists/?q=T',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertIsInstance(data['buckets'], list, 'Items must be a list')
+            self.assertEqual(len(data['buckets']), 3)
+            self.assertEqual(data['buckets'][0]['id'], 1)
+            self.assertEqual(data['count'], 6)
+            self.assertEqual(data['next'], 'http://localhost/bucketlists/?page=2')
+            self.assertEqual(data['previous'], None)
+            self.assertEqual(response.status_code, 200)
+
+    def test_buckets_returned_when_searched_2(self):
+        """
+        Test Buckets are returned when a query search q is present in the url
+        Also test that the next page pagination string is None
+        and previous is 'http://localhost/bucketlists/1/items/?page=1'
+        :return:
+        """
+        with self.client:
+            token = self.get_user_token()
+            self.create_buckets(token)
+            response = self.client.get(
+                '/bucketlists/?q=T&page=2',
+                headers=dict(Authorization='Bearer ' + token)
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertIsInstance(data['buckets'], list, 'Items must be a list')
+            self.assertEqual(len(data['buckets']), 3)
+            self.assertEqual(data['buckets'][0]['id'], 4)
+            self.assertEqual(data['count'], 6)
+            self.assertEqual(data['next'], None)
+            self.assertEqual(data['previous'], 'http://localhost/bucketlists/?page=1')
+            self.assertEqual(response.status_code, 200)
+
 
 
 if __name__ == '__main__':

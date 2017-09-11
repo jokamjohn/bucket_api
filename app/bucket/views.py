@@ -40,7 +40,7 @@ def create_bucketlist(current_user):
         data = request.get_json()
         name = data.get('name')
         if name:
-            user_bucket = Bucket(name, current_user.id)
+            user_bucket = Bucket(name.lower(), current_user.id)
             user_bucket.save()
             return response_for_created_bucket(user_bucket, 201)
         return response('failed', 'Missing name attribute', 400)

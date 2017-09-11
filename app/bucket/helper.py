@@ -87,7 +87,7 @@ def paginate_buckets(user_id, page, q, user):
     :return: Pagination next url, previous url and the user buckets.
     """
     if q:
-        pagination = Bucket.query.filter(Bucket.name.like("%" + q.strip() + "%")).filter_by(user_id=user_id) \
+        pagination = Bucket.query.filter(Bucket.name.like("%" + q.lower().strip() + "%")).filter_by(user_id=user_id) \
             .paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'], error_out=False)
     else:
         pagination = user.buckets.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
