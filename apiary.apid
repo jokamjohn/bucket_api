@@ -1,0 +1,648 @@
+FORMAT: 1A
+HOST: http://kbucket-api.herokuapp.com
+
+
+# BucketList
+
+Bucketlist is an API allowing a user to register, login to create a bucket and
+bucket items.
+
+## User Registration [/auth/register]
+
+### Register a user [POST]
+
+You can create a user by sending a json request with an email and password. The
+password must be four(4) characters and more.
+
++ Request (application/json)
+
+        {
+            "email": "example@gmail.com",
+            "password": "123456"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDM0ODQ5OTYsImlhdCI6MTUwMzM5ODU4Niwic3ViIjo1fQ.GC6IEOohdo_xrz9__UeugIlir0qtJdKbEzBtLgqjt5A",
+            "message": "Successfully registered",
+            "status": "success"
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Missing or wrong email format or password",
+            "status": "failed"
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Failed, User already exists, Please sign In",
+            "status": "failed"
+        }
+
++ Response 202 (application/json)
+
+        {
+          "message": "Content-type must be json",
+          "status": "failed"
+        }
+
+## Login [/auth/login]
+
+### Login a user [POST]
+You can login a user by sending their email and password. Please take note
+of the auth token for you will need it for all user requests.
+
++ Request (application/json)
+
+        {
+            "email": "example@gmail.com",
+            "password": "123456"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDM0ODQ5OTYsImlhdCI6MTUwMzM5ODU4Niwic3ViIjo1fQ.GC6IEOohdo_xrz9__UeugIlir0qtJdKbEzBtLgqjt5A",
+            "message": "Successfully registered",
+            "status": "success"
+        }
+
++ Response 202 (application/json)
+
+        {
+          "message": "Content-type must be json",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "Missing or wrong email format or password is less than four characters",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "User does not exist or password is incorrect",
+          "status": "failed"
+        }
+
+## Logout [/auth/logout]
+
+### Log out a user [POST]
+
+You can log out a user by sending a request with their email and address. The
+auth token will then be invalidated.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "Successfully logged out",
+            "status": "success"
+        }
+
++ Response 403 (application/json)
+
+        {
+          "message": "Provide a valid auth token",
+          "status": "failed"
+        }
+
++ Response 403 (application/json)
+
+        {
+          "message": "Provide an authorization header",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "Signature expired, Please sign in again",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "Invalid token. Please sign in again",
+          "status": "failed"
+        }
+
+## Bucket Resources [/bucketlists{?page}{?q}]
+
+You can create, read, update and delete buckets.
+
+NOTE: A valid token should be present in the header else a 401 or 403 response
+will be returned as seen in the log out section.
+
++ Parameters
+    + page(optional, number, `1`) - The page number
+    + q(optional, string) - Search query
+
+### Create a Bucket [POST]
+    Add a new Bucket attached to the user
+
++ name (required, string) -  Name of the Bucket
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
+    + Body
+
+            {
+              "name": "Travel"
+            }
+
++ Response 201 (application/json)
+
+        {
+            "createdAt": "Wed, 23 Aug 2017 10:14:52 GMT",
+            "id": 2,
+            "modifiedAt": "Wed, 23 Aug 2017 10:14:52 GMT",
+            "name": "Travel",
+            "status": "success"
+        }
+
++ Response 202 (application/json)
+
+        {
+          "message": "Content-type must be json",
+          "status": "failed"
+        }
+
++ Response 400 (application/json)
+
+        {
+          "message": "Missing name attribute",
+          "status": "failed"
+        }
+
+### List all Buckets [GET]
+
+You can get a list of all the Buckets that below to a user. The results are
+paginated with the previous and next url.
+
+You can also search for a Bucket by its name using the q query parameter.
+
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "buckets": [
+                {
+                    "createdAt": "2017-09-05T17:55:33.120344",
+                    "id": 2,
+                    "modifiedAt": "2017-09-05T17:55:33.120344",
+                    "name": "Property & Casualty Insurance"
+                },
+                {
+                    "createdAt": "2017-09-05T17:55:33.127347",
+                    "id": 3,
+                    "modifiedAt": "2017-09-05T17:55:33.127347",
+                    "name": "Technology"
+                },
+                {
+                    "createdAt": "2017-09-05T17:55:33.134350",
+                    "id": 4,
+                    "modifiedAt": "2017-09-05T17:55:33.134350",
+                    "name": "Waste Management"
+                },
+                {
+                    "createdAt": "2017-09-05T17:55:33.140357",
+                    "id": 5,
+                    "modifiedAt": "2017-09-05T17:55:33.140357",
+                    "name": "Auto Parts Wholesale"
+                }
+            ],
+            "count": 99,
+            "next": "http://127.0.0.1:5000/bucketlists/?page=2",
+            "previous": null,
+            "status": "success"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "buckets": [],
+            "count": 0,
+            "next": null,
+            "previous": null,
+            "status": "success"
+        }
+
+## Single Bucket Resources [/bucketlists/{bucket_id}]
+
++ Parameters
+    + bucket_id (required,number) - Id of the bucket to be returned
+
+### Get a Bucket [GET]
+
+You get a single bucket by specifying its Id.
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "bucket": {
+                "createdAt": "2017-08-24T19:56:07.942974",
+                "id": 3,
+                "modifiedAt": "2017-08-24T19:56:07.942974",
+                "name": "Travel"
+            },
+            "status": "success"
+        }
+
++ Response 400 (application/json)
+
+        {
+          "message": "Please provide a valid Bucket Id",
+          "status": "failed"
+        }
+
+### Edit a Bucket [PUT]
+
+You can update the name of the Bucket
+
++ name (required, string) -  Name of the Bucket
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
+    + Body
+
+            {
+              "name": "Travel"
+            }
+
++ Response 201 (application/json)
+
+        {
+            "createdAt": "Tue, 05 Sep 2017 17:55:33 GMT",
+            "id": 2,
+            "modifiedAt": "Tue, 05 Sep 2017 17:55:33 GMT",
+            "name": "Cooking",
+            "status": "success"
+        }
++ Response 202 (application/json)
+
+        {
+          "message": "Content-type must be json",
+          "status": "failed"
+        }
+
++ Response 400 (application/json)
+
+        {
+          "message": "Please provide a valid Bucket Id",
+          "status": "failed"
+        }
+
++ Response 400 (application/json)
+
+        {
+          "message": "No attribute or value was specified, nothing was changed",
+          "status": "failed"
+        }
+
++ Response 404 (application/json)
+
+        {
+          "message": "The Bucket with Id  does not exist",
+          "status": "failed"
+        }
+
+### Delete a Buket [DELETE]
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "Successfully deleted the item from bucket with Id 3",
+            "status": "success"
+        }
+
++ Response 400 (application/json)
+
+        {
+          "message": "Please provide a valid Bucket Id",
+          "status": "failed"
+        }
+
++ Response 404 (application/json)
+
+        {
+          "message": "Bucket resource cannot be found",
+          "status": "failed"
+        }
+
+## Bucket Item Resources [/bucketlists/{bucket_id}/items{?page}/{?q}]
+
+You can create, read, update and delete bucket items.
+
+NOTE: A valid token should be present in the header else a 401 or 403 response
+will be returned as seen in the log out section.
+
+The Bucket Id must be valid else a response with code status 401 will be returned
+
++ Parameters
+    + bucket_id (required, number) - Id of the Bucket
+    + page (optional, number, `1`) - Page to return
+    + q (optional, string) - Search query string
+
+### Get all items within a bucket [GET]
+
+You can get all the items within the bucket if they exist others the items
+list will be empty.
+
+You can also use the query parameter q to search for an item name within the Bucket as showm below
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "count": 9,
+            "items": [
+                {
+                    "bucketId": 3,
+                    "createdAt": "2017-09-05T17:55:34.814267",
+                    "description": "sed",
+                    "id": 88,
+                    "modifiedAt": "2017-09-05T17:55:34.814267",
+                    "name": "Tambee"
+                },
+                {
+                    "bucketId": 3,
+                    "createdAt": "2017-09-05T17:55:35.768740",
+                    "description": "maecenas",
+                    "id": 166,
+                    "modifiedAt": "2017-09-05T17:55:35.768740",
+                    "name": "Cogilith"
+                },
+                {
+                    "bucketId": 3,
+                    "createdAt": "2017-09-05T17:55:36.245435",
+                    "description": "volutpat",
+                    "id": 205,
+                    "modifiedAt": "2017-09-05T17:55:36.245435",
+                    "name": "Nlounge"
+                },
+                {
+                    "bucketId": 3,
+                    "createdAt": "2017-09-05T17:55:37.489873",
+                    "description": "quam",
+                    "id": 304,
+                    "modifiedAt": "2017-09-05T17:55:37.489873",
+                    "name": "Flashset"
+                }
+            ],
+            "next": "http://127.0.0.1:5000/bucketlists/3/items/?page=2",
+            "previous": null,
+            "status": "success"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "count": 0,
+            "items": [],
+            "next": null,
+            "previous": null,
+            "status": "success"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "Provide a valid Bucket Id",
+          "status": "failed"
+        }
+
+### Add an item to the Bucket [POST]
+
+You can also add an item to the Bucket by sending a name and an optional
+description for the item.
+
++ name (required, string) - Name of the item
++ description (optional, string) - Description of the item
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
+    + Body
+
+            {
+              "name": "item",
+              "description": "loren ipsum"
+            }
+
++ Response 201 (application/json)
+
+        {
+            "item": {
+                "bucketId": 2,
+                "createdAt": "2017-09-06T19:44:14.606760",
+                "description": "loren ipsum",
+                "id": 1001,
+                "modifiedAt": "2017-09-06T19:44:14.606760",
+                "name": "item"
+            },
+            "status": "success"
+        }
+
++ Response 202 (application/json)
+
+        {
+          "message": "User has no Bucket with Id",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "No name or value attribute found",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "Content-type must be application/json",
+          "status": "failed"
+        }
+
+## Single Bucket Items Resource [/bucketlists/{bucket_id}/item/{item_id}]
+
+NOTE: A valid token should be present in the header else a 401 or 403 response
+will be returned as seen in the log out section.
+
+The Bucket Id must be valid else a response with code status 401 will be returned
+
++ Parameters
+    + bucket_id (required, number) - Id of the Bucket
+    + item_id (required, number) - Id of the Item
+
+### Get an Item from the Bucket [GET]
+
+You can get an Item from the Bucjet by specifying the Bucket Id and Item Id
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 201 (application/json)
+
+        {
+            "item": {
+                "bucketId": 2,
+                "createdAt": "2017-09-05T17:55:33.742090",
+                "description": "at",
+                "id": 2,
+                "modifiedAt": "2017-09-05T17:55:33.742090",
+                "name": "Feedmix"
+            },
+            "status": "success"
+        }
+
++ Response 202 (application/json)
+
+        {
+          "message": "Provide a valid item Id",
+          "status": "failed"
+        }
+
++ Response 202 (application/json)
+
+        {
+          "message": "User has no Bucket with Id",
+          "status": "failed"
+        }
+
+
+### Edit an Item within a Bucket [PUT]
+
+You can also edit an item within the Bucket.
+
++ name (required, string) - Name of the item
++ description (optional, string) - Description of the item
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
+    + Body
+
+            {
+              "name": "item",
+              "description": "loren ipsum"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "item": {
+                "bucketId": 2,
+                "createdAt": "2017-09-05T17:55:33.742090",
+                "description": "loren ",
+                "id": 2,
+                "modifiedAt": "2017-09-05T17:55:33.742090",
+                "name": "travel"
+            },
+            "status": "success"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "No name or value attribute found",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "No attributes specified in the request",
+          "status": "failed"
+        }
+
+### Delete an item from the Bucket [DELETE]
+
+You can delete an item from a Bucket by sending a delete request, by specifying
+the Bucket Id and Item Id.
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "Successfully deleted the item from bucket with Id 2",
+            "status": "success"
+        }
+
++ Response 404 (application/json)
+
+        {
+          "message": "Item not found",
+          "status": "failed"
+        }
+
+
