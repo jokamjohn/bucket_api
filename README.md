@@ -6,6 +6,8 @@
 
 The api enables you to create/ register a user within the application.
 
+**I wrote up a post on medium of how I developed this
+API, you can find it [here](https://medium.com/@johnkagga/how-i-developed-an-api-in-python-using-flask-4e388674f1)**
 ## Usage
 - [Running the application](#starting-the-application)
 - [Live Application](#live-application)
