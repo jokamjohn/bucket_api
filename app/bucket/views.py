@@ -3,6 +3,7 @@ from app.auth.helper import token_required
 from app.bucket.helper import response, response_for_created_bucket, response_for_user_bucket, response_with_pagination, \
     get_user_bucket_json_list, paginate_buckets
 from app.models import User, Bucket
+from flask_cors import cross_origin
 
 # Initialize blueprint
 bucket = Blueprint('bucket', __name__)
@@ -29,6 +30,7 @@ def bucketlist(current_user):
 
 
 @bucket.route('/bucketlists', methods=['POST'])
+@cross_origin()
 @token_required
 def create_bucketlist(current_user):
     """
