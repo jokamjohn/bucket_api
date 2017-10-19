@@ -206,7 +206,7 @@ class TestBucketItem(BaseTestCase):
             self.assertEqual(data['items'][0]['bucketId'], 1)
             self.assertEqual(data['items'][0]['id'], 1)
             self.assertEqual(data['count'], 6)
-            self.assertEqual(data['next'], 'http://localhost/bucketlists/1/items/?page=2')
+            self.assertEqual(data['next'], 'http://localhost/bucketlists/1/items/?q=f&page=2')
             self.assertEqual(data['previous'], None)
             self.assertEqual(response.status_code, 200)
 
@@ -232,7 +232,7 @@ class TestBucketItem(BaseTestCase):
             self.assertEqual(data['items'][0]['id'], 4)
             self.assertEqual(data['count'], 6)
             self.assertEqual(data['next'], None)
-            self.assertEqual(data['previous'], 'http://localhost/bucketlists/1/items/?page=1')
+            self.assertEqual(data['previous'], 'http://localhost/bucketlists/1/items/?q=f&page=1')
             self.assertEqual(response.status_code, 200)
 
     def test_empty_item_list_is_returned_when_no_items_in_bucket(self):
@@ -317,7 +317,7 @@ class TestBucketItem(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'User has no Bucket with Id 1')
-            self.assertEqual(response.status_code, 202)
+            self.assertEqual(response.status_code, 404)
 
     def test_invalid_item_id_delete_request(self):
         """

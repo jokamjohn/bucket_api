@@ -60,7 +60,7 @@ def get_item(current_user, bucket_id, item_id):
     # Get the user Bucket
     bucket = get_user_bucket(current_user, bucket_id)
     if bucket is None:
-        return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
+        return response('failed', 'User has no Bucket with Id ' + bucket_id, 404)
 
     # Delete the item from the bucket
     item = bucket.items.filter_by(id=item_id).first()
