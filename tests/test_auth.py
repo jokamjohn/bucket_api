@@ -31,7 +31,7 @@ class TestAuthBluePrint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed', msg='Should return failed')
             self.assertTrue(data['message'] == 'Content-type must be json')
-            self.assertEqual(response.status_code, 202)
+            self.assertEqual(response.status_code, 400)
 
     def test_user_registration_missing_email_or_and_password(self):
         """
@@ -76,7 +76,7 @@ class TestAuthBluePrint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'Failed, User already exists, Please sign In')
-            self.assertEqual(response.status_code, 202)
+            self.assertEqual(response.status_code, 400)
 
     def test_user_can_login(self):
         """

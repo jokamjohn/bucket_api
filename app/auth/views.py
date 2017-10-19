@@ -29,9 +29,9 @@ class RegisterUser(MethodView):
                     token = User(email=email, password=password).save()
                     return response_auth('success', 'Successfully registered', token, 201)
                 else:
-                    return response('failed', 'Failed, User already exists, Please sign In', 202)
-            return response('failed', 'Missing or wrong email format or password is less than four characters', 202)
-        return response('failed', 'Content-type must be json', 202)
+                    return response('failed', 'Failed, User already exists, Please sign In', 400)
+            return response('failed', 'Missing or wrong email format or password is less than four characters', 400)
+        return response('failed', 'Content-type must be json', 400)
 
 
 class LoginUser(MethodView):
