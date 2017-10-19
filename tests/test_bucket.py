@@ -19,7 +19,7 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/bucketlists',
+                '/bucketlists/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token()),
                 data=json.dumps({}),
                 content_type='application/json'
@@ -36,7 +36,7 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/bucketlists',
+                '/bucketlists/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token()),
                 data=json.dumps(dict(name='Travel'))
             )
@@ -89,7 +89,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
             # Create a Bucket
             response = self.client.post(
-                '/bucketlists',
+                '/bucketlists/',
                 data=json.dumps(dict(name='Travel')),
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
@@ -169,7 +169,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
             # Create a Bucket
             response = self.client.post(
-                '/bucketlists',
+                '/bucketlists/',
                 data=json.dumps(dict(name='Travel')),
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
@@ -279,7 +279,7 @@ class TestBucketBluePrint(BaseTestCase):
             # Get an auth token
             token = self.get_user_token()
             response = self.client.post(
-                '/bucketlists',
+                '/bucketlists/',
                 data=json.dumps(dict(name='Travel')),
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
@@ -337,7 +337,7 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertEqual(len(data['buckets']), 3)
             self.assertEqual(data['buckets'][0]['id'], 1)
             self.assertEqual(data['count'], 6)
-            self.assertEqual(data['next'], 'http://localhost/bucketlists/?page=2')
+            self.assertEqual(data['next'], 'http://localhost/bucketlists/?q=T&page=2')
             self.assertEqual(data['previous'], None)
             self.assertEqual(response.status_code, 200)
 
@@ -362,9 +362,8 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertEqual(data['buckets'][0]['id'], 4)
             self.assertEqual(data['count'], 6)
             self.assertEqual(data['next'], None)
-            self.assertEqual(data['previous'], 'http://localhost/bucketlists/?page=1')
+            self.assertEqual(data['previous'], 'http://localhost/bucketlists/?q=T&page=1')
             self.assertEqual(response.status_code, 200)
-
 
 
 if __name__ == '__main__':
