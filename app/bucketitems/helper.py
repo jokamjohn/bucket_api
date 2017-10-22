@@ -101,8 +101,14 @@ def get_paginated_items(bucket, bucket_id, page, q):
                                            error_out=False)
     previous = None
     if pagination.has_prev:
-        previous = url_for('items.get_items', bucket_id=bucket_id, page=page - 1, _external=True)
+        if q:
+            previous = url_for('items.get_items', q=q, bucket_id=bucket_id, page=page - 1, _external=True)
+        else:
+            previous = url_for('items.get_items', bucket_id=bucket_id, page=page - 1, _external=True)
     nex = None
     if pagination.has_next:
-        nex = url_for('items.get_items', bucket_id=bucket_id, page=page + 1, _external=True)
+        if q:
+            nex = url_for('items.get_items', q=q, bucket_id=bucket_id, page=page + 1, _external=True)
+        else:
+            nex = url_for('items.get_items', bucket_id=bucket_id, page=page + 1, _external=True)
     return pagination.items, nex, pagination, previous

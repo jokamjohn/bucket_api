@@ -94,9 +94,15 @@ def paginate_buckets(user_id, page, q, user):
                                            error_out=False)
     previous = None
     if pagination.has_prev:
-        previous = url_for('bucket.bucketlist', page=page - 1, _external=True)
+        if q:
+            previous = url_for('bucket.bucketlist', q=q, page=page - 1, _external=True)
+        else:
+            previous = url_for('bucket.bucketlist', page=page - 1, _external=True)
     nex = None
     if pagination.has_next:
-        nex = url_for('bucket.bucketlist', page=page + 1, _external=True)
+        if q:
+            nex = url_for('bucket.bucketlist', q=q, page=page + 1, _external=True)
+        else:
+            nex = url_for('bucket.bucketlist', page=page + 1, _external=True)
     items = pagination.items
     return items, nex, pagination, previous
