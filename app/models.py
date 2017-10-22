@@ -89,6 +89,15 @@ class User(db.Model):
         """
         return User.query.filter_by(email=email).first()
 
+    def reset_password(self, new_password):
+        """
+        Update/reset the user password.
+        :param new_password: New User Password
+        :return:
+        """
+        self.password = new_password
+        db.session.commit()
+
 
 class BlackListToken(db.Model):
     """

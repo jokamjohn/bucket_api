@@ -31,7 +31,7 @@ class TestAuthBluePrint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed', msg='Should return failed')
             self.assertTrue(data['message'] == 'Content-type must be json')
-            self.assertEqual(response.status_code, 202)
+            self.assertEqual(response.status_code, 400)
 
     def test_user_registration_missing_email_or_and_password(self):
         """
@@ -76,7 +76,7 @@ class TestAuthBluePrint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'Failed, User already exists, Please sign In')
-            self.assertEqual(response.status_code, 202)
+            self.assertEqual(response.status_code, 400)
 
     def test_user_can_login(self):
         """
@@ -349,6 +349,119 @@ class TestAuthBluePrint(BaseTestCase):
             '/auth/login',
             content_type='application/json',
             data=json.dumps(dict(email=email, password=password)))
+
+    def test_user_can_reset_password(self):
+        """
+        Test that a password is successfully reset.
+        :return:
+        """
+        with self.client:
+            login_data = self.register_and_login_in_user()
+            token = login_data['auth_token']
+            response = self.client.post(
+                '/auth/reset/password',
+                headers=dict(Authorization='Bearer ' + token),
+                content_type='application/json',
+                data=json.dumps(dict(oldPassword='123456', newPassword='098765',
+                                     passwordConfirmation='098765')))
+            res = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(res['status'] == 'success')
+            self.assertTrue(res['message'] == 'Password reset successfully')
+
+    def test_request_fails_if_content_type_not_json(self):
+        """
+        Test a request fails if content type is not json
+        :return:
+        """
+        with self.client:
+            login_data = self.register_and_login_in_user()
+            token = login_data['auth_token']
+            response = self.client.post(
+                '/auth/reset/password',
+                headers=dict(Authorization='Bearer ' + token),
+                data=json.dumps(dict(oldPassword='123456', newPassword='098765',
+                                     passwordConfirmation='098765')))
+            res = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(res['status'] == 'failed')
+            self.assertTrue(res['message'] == 'Content type must be json')
+
+    def test_old_password_supplied_by_user_is_incorrect(self):
+        """
+        Test that the user supplied an incorrect password
+        :return:
+        """
+        with self.client:
+            login_data = self.register_and_login_in_user()
+            token = login_data['auth_token']
+            response = self.client.post(
+                '/auth/reset/password',
+                content_type='application/json',
+                headers=dict(Authorization='Bearer ' + token),
+                data=json.dumps(dict(oldPassword='13456', newPassword='098765',
+                                     passwordConfirmation='098765')))
+            res = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 401)
+            self.assertTrue(res['status'] == 'failed')
+            self.assertTrue(res['message'] == 'Incorrect password')
+
+    def test_some_attributes_are_not_in_the_requested(self):
+        """
+        Test that some attributes are not included in the request.
+        :return:
+        """
+        with self.client:
+            login_data = self.register_and_login_in_user()
+            token = login_data['auth_token']
+            response = self.client.post(
+                '/auth/reset/password',
+                content_type='application/json',
+                headers=dict(Authorization='Bearer ' + token),
+                data=json.dumps(dict(oldPassword='123456', newPassword='098765')))
+            res = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(res['status'] == 'failed')
+            self.assertTrue(res['message'] == 'Missing required attributes')
+
+    def test_that_new_password_does_not_match_confirmation(self):
+        """
+        Test that the new password does not match the password confirmation.
+        :return:
+        """
+        with self.client:
+            login_data = self.register_and_login_in_user()
+            token = login_data['auth_token']
+            response = self.client.post(
+                '/auth/reset/password',
+                headers=dict(Authorization='Bearer ' + token),
+                content_type='application/json',
+                data=json.dumps(dict(oldPassword='123456', newPassword='098765',
+                                     passwordConfirmation='09865')))
+            res = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(res['status'] == 'failed')
+            self.assertTrue(res['message'] == 'New password does not match')
+
+    def test_failed_status_when_new_password_is_less_than_four_characters(self):
+        """
+        Test that a failed status message is returned when new password is four
+        characters and below.
+        :return:
+        """
+        with self.client:
+            login_data = self.register_and_login_in_user()
+            token = login_data['auth_token']
+            response = self.client.post(
+                '/auth/reset/password',
+                headers=dict(Authorization='Bearer ' + token),
+                content_type='application/json',
+                data=json.dumps(dict(oldPassword='123456', newPassword='0987',
+                                     passwordConfirmation='0987')))
+            res = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(res['status'] == 'failed')
+            self.assertTrue(res['message'] == 'New password should be greater than four characters long')
 
 
 if __name__ == '__main__':
