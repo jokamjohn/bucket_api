@@ -149,8 +149,8 @@ class TestBucketItem(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
-            self.assertTrue(data['message'] == 'User has no Bucket with Id 1')
-            self.assertEqual(response.status_code, 202)
+            self.assertTrue(data['message'] == 'Bucket not found')
+            self.assertEqual(response.status_code, 404)
 
     def test_an_item_has_been_successfully_saved(self):
         """
@@ -248,10 +248,8 @@ class TestBucketItem(BaseTestCase):
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertIsInstance(data['items'], list, 'Items must be a list')
-            self.assertEqual(len(data['items']), 0, msg="The length of the items list must be 0")
-            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['status'] == 'failed')
+            self.assertEqual(response.status_code, 404)
 
     def test_item_is_returned_successfully_get_request(self):
         """

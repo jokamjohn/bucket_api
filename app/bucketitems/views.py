@@ -23,7 +23,7 @@ def get_items(current_user, bucket_id):
     # Get the user Bucket
     bucket = get_user_bucket(current_user, bucket_id)
     if bucket is None:
-        return response('failed', 'User has no Bucket with Id ' + bucket_id, 202)
+        return response('failed', 'Bucket not found', 404)
 
     # Get items in the bucket
     page = request.args.get('page', 1, type=int)
@@ -36,7 +36,7 @@ def get_items(current_user, bucket_id):
         for item in items:
             result.append(item.json())
         return response_with_pagination(result, previous, nex, pagination.total)
-    return response_with_pagination([], previous, nex, 0)
+    return response("failed", "Items not found", 404)
 
 
 @bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['GET'])
