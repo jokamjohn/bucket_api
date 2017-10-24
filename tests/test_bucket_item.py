@@ -248,8 +248,8 @@ class TestBucketItem(BaseTestCase):
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'failed')
-            self.assertEqual(response.status_code, 404)
+            self.assertTrue(data['status'] == 'success')
+            self.assertEqual(response.status_code, 200)
 
     def test_item_is_returned_successfully_get_request(self):
         """
