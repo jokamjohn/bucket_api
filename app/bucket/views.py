@@ -64,7 +64,7 @@ def get_bucket(current_user, bucket_id):
         user_bucket = User.get_by_id(current_user.id).buckets.filter_by(id=bucket_id).first()
         if user_bucket:
             return response_for_user_bucket(user_bucket.json())
-        return response_for_user_bucket([])
+        return response('failed', "Bucket not found", 404)
 
 
 @bucket.route('/bucketlists/<bucket_id>', methods=['PUT'])

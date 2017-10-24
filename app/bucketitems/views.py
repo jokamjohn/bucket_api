@@ -36,7 +36,7 @@ def get_items(current_user, bucket_id):
         for item in items:
             result.append(item.json())
         return response_with_pagination(result, previous, nex, pagination.total)
-    return response("failed", "Items not found", 404)
+    return response_with_pagination([], previous, nex, 0)
 
 
 @bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['GET'])

@@ -123,9 +123,8 @@ class TestBucketBluePrint(BaseTestCase):
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 200)
-            self.assertTrue(data['status'] == 'success')
-            self.assertIsInstance(data['bucket'], list)
+            self.assertEqual(response.status_code, 404)
+            self.assertTrue(data['status'] == 'failed')
             self.assertTrue(response.content_type == 'application/json')
 
     def test_deletion_handles_no_bucket_found_by_id(self):
