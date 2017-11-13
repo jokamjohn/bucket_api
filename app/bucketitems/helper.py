@@ -94,11 +94,13 @@ def get_paginated_items(bucket, bucket_id, page, q):
 
     if q:
         pagination = BucketItem.query.filter(BucketItem.name.like("%" + q.lower().strip() + "%")) \
+            .order_by(BucketItem.create_at.desc()) \
             .filter_by(bucket_id=bucket_id) \
             .paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'], error_out=False)
     else:
-        pagination = bucket.items.paginate(page=page, per_page=app.config['BUCKET_AND_ITEMS_PER_PAGE'],
-                                           error_out=False)
+        pagination = bucket.items.order_by(BucketItem.create_at.desc()).paginate(page=page, per_page=app.config[
+            'BUCKET_AND_ITEMS_PER_PAGE'], error_out=False)
+
     previous = None
     if pagination.has_prev:
         if q:
