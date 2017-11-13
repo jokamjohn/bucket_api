@@ -39,7 +39,7 @@ def get_items(current_user, bucket_id):
     return response_with_pagination([], previous, nex, 0)
 
 
-@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['GET'])
+@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>/', methods=['GET'])
 @token_required
 @bucket_required
 def get_item(current_user, bucket_id, item_id):
@@ -69,7 +69,7 @@ def get_item(current_user, bucket_id, item_id):
     return response_with_bucket_item('success', item, 200)
 
 
-@bucketitems.route('/bucketlists/<bucket_id>/items', methods=['POST'])
+@bucketitems.route('/bucketlists/<bucket_id>/items/', methods=['POST'])
 @token_required
 @bucket_required
 def post(current_user, bucket_id):
@@ -98,7 +98,7 @@ def post(current_user, bucket_id):
     return response_with_bucket_item('success', item, 200)
 
 
-@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['PUT'])
+@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>/', methods=['PUT'])
 @token_required
 @bucket_required
 def edit_item(current_user, bucket_id, item_id):
@@ -145,7 +145,7 @@ def edit_item(current_user, bucket_id, item_id):
     return response_with_bucket_item('success', item, 200)
 
 
-@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>', methods=['DELETE'])
+@bucketitems.route('/bucketlists/<bucket_id>/items/<item_id>/', methods=['DELETE'])
 @token_required
 @bucket_required
 def delete(current_user, bucket_id, item_id):

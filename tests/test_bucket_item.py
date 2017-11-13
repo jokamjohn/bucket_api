@@ -11,7 +11,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/bucketlists/1/items',
+                '/bucketlists/1/items/',
                 data=json.dumps(dict(name='food')),
                 content_type='application/javascript',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -28,7 +28,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.put(
-                '/bucketlists/1/items/1',
+                '/bucketlists/1/items/1/',
                 data=json.dumps(dict(name='food')),
                 content_type='application/javascript',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -45,7 +45,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/bucketlists/id/items',
+                '/bucketlists/id/items/',
                 data=json.dumps(dict(name='Food')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -62,7 +62,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.put(
-                '/bucketlists/id/items/1',
+                '/bucketlists/id/items/1/',
                 data=json.dumps(dict(name='Food')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -75,7 +75,7 @@ class TestBucketItem(BaseTestCase):
     def test_name_attribute_is_missing_in_request(self):
         with self.client:
             response = self.client.post(
-                '/bucketlists/1/items',
+                '/bucketlists/1/items/',
                 data=json.dumps(dict(description='')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -95,7 +95,7 @@ class TestBucketItem(BaseTestCase):
             self.create_bucket(token)
             self.create_item(token)
             response = self.client.put(
-                '/bucketlists/1/items/1',
+                '/bucketlists/1/items/1/',
                 data=json.dumps(dict(description='')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + token)
@@ -108,7 +108,7 @@ class TestBucketItem(BaseTestCase):
     def test_name_attribute_has_no_value_in_request(self):
         with self.client:
             response = self.client.post(
-                '/bucketlists/1/items',
+                '/bucketlists/1/items/',
                 data=json.dumps(dict(name='')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -125,7 +125,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/bucketlists/1/items',
+                '/bucketlists/1/items/',
                 data=json.dumps(dict(name='food')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -261,7 +261,7 @@ class TestBucketItem(BaseTestCase):
             self.create_bucket(token)
             self.create_item(token)
             response = self.client.get(
-                '/bucketlists/1/items/1',
+                '/bucketlists/1/items/1/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -279,7 +279,7 @@ class TestBucketItem(BaseTestCase):
             token = self.get_user_token()
             self.create_bucket(token)
             response = self.client.get(
-                '/bucketlists/1/items/1',
+                '/bucketlists/1/items/1/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -294,7 +294,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists/1/items/dsfdgfghjg',
+                '/bucketlists/1/items/dsfdgfghjg/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
@@ -309,7 +309,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists/1/items/1',
+                '/bucketlists/1/items/1/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
@@ -324,7 +324,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.delete(
-                '/bucketlists/1/items/dsfdgfghjg',
+                '/bucketlists/1/items/dsfdgfghjg/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
@@ -339,7 +339,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.delete(
-                '/bucketlists/1/items/1',
+                '/bucketlists/1/items/1/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
@@ -353,7 +353,7 @@ class TestBucketItem(BaseTestCase):
             self.create_bucket(token)
             self.create_item(token)
             response = self.client.delete(
-                '/bucketlists/1/items/1',
+                '/bucketlists/1/items/1/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -368,7 +368,7 @@ class TestBucketItem(BaseTestCase):
         :return:
         """
         response = self.client.post(
-            '/bucketlists/1/items',
+            '/bucketlists/1/items/',
             data=json.dumps(dict(name='food', description='Enjoying the good life')),
             content_type='application/json',
             headers=dict(Authorization='Bearer ' + token)
@@ -396,7 +396,7 @@ class TestBucketItem(BaseTestCase):
         ]
         for item in items:
             response = self.client.post(
-                '/bucketlists/1/items',
+                '/bucketlists/1/items/',
                 data=json.dumps(dict(name=item['name'], description=item['description'])),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + token)
@@ -416,7 +416,7 @@ class TestBucketItem(BaseTestCase):
             token = self.get_user_token()
             self.create_bucket(token)
             response = self.client.delete(
-                '/bucketlists/1/items/1',
+                '/bucketlists/1/items/1/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
