@@ -95,7 +95,8 @@ class User(db.Model):
         :param new_password: New User Password
         :return:
         """
-        self.password = new_password
+        self.password = bcrypt.generate_password_hash(new_password, app.config.get('BCRYPT_LOG_ROUNDS')) \
+            .decode('utf-8')
         db.session.commit()
 
 

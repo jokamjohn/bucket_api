@@ -441,7 +441,7 @@ class TestAuthBluePrint(BaseTestCase):
             res = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
             self.assertTrue(res['status'] == 'failed')
-            self.assertTrue(res['message'] == 'New password does not match')
+            self.assertTrue(res['message'] == 'New Passwords do not match')
 
     def test_failed_status_when_new_password_is_less_than_four_characters(self):
         """
