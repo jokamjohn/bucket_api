@@ -80,7 +80,7 @@ class LogOutUser(MethodView):
         return response('failed', 'Provide an authorization header', 403)
 
 
-@auth.route('/auth/reset/password', methods=['POST'])
+@auth.route('/auth/reset/password/', methods=['POST'])
 @token_required
 def reset_password(current_user):
     if request.content_type == "application/json":

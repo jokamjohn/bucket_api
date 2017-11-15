@@ -359,7 +359,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                '/auth/reset/password/',
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json',
                 data=json.dumps(dict(oldPassword='123456', newPassword='098765',
@@ -378,7 +378,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                '/auth/reset/password/',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(oldPassword='123456', newPassword='098765',
                                      passwordConfirmation='098765')))
@@ -396,7 +396,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                '/auth/reset/password/',
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(oldPassword='13456', newPassword='098765',
@@ -415,7 +415,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                '/auth/reset/password/',
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(oldPassword='123456', newPassword='098765')))
@@ -433,7 +433,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                '/auth/reset/password/',
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json',
                 data=json.dumps(dict(oldPassword='123456', newPassword='098765',
@@ -453,7 +453,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                '/auth/reset/password/',
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json',
                 data=json.dumps(dict(oldPassword='123456', newPassword='0987',
