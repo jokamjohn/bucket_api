@@ -90,9 +90,9 @@ def reset_password(current_user):
         password_confirmation = data.get('passwordConfirmation')
         if not old_password or not new_password or not password_confirmation:
             return response('failed', "Missing required attributes", 400)
-        if bcrypt.check_password_hash(current_user.password, old_password):
+        if bcrypt.check_password_hash(current_user.password, old_password.encode('utf-8')):
             if not new_password == password_confirmation:
-                return response('failed', 'New password does not match', 400)
+                return response('failed', 'New Passwords do not match', 400)
             if not len(new_password) > 4:
                 return response('failed', 'New password should be greater than four characters long', 400)
             current_user.reset_password(new_password)

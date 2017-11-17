@@ -34,7 +34,7 @@ class BaseTestCase(TestCase):
         :return:
         """
         return self.client.post(
-            '/auth/register',
+            'v1/auth/register',
             content_type='application/json',
             data=json.dumps(dict(email=email, password=password)))
 
@@ -52,7 +52,7 @@ class BaseTestCase(TestCase):
         :return:
         """
         response = self.client.post(
-            '/bucketlists/',
+            'v1/bucketlists/',
             data=json.dumps(dict(name='Travel')),
             headers=dict(Authorization='Bearer ' + token),
             content_type='application/json'
@@ -78,7 +78,7 @@ class BaseTestCase(TestCase):
         ]
         for bucket in buckets:
             response = self.client.post(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 data=json.dumps(dict(name=bucket['name'])),
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'

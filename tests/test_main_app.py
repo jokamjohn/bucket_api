@@ -19,7 +19,7 @@ class TestMainAppCase(BaseTestCase):
     def test_http_method_not_found(self):
         with self.client:
             response = self.client.delete(
-                '/bucketlists/<bucket_id>/items',
+                'v1/bucketlists/<bucket_id>/items',
                 headers=dict(Authorization='Bearer ' + self.get_user_token()))
             data = json.loads(response.data.decode())
             self.assert405(response)
