@@ -19,7 +19,7 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token()),
                 data=json.dumps({}),
                 content_type='application/json'
@@ -36,7 +36,7 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token()),
                 data=json.dumps(dict(name='Travel'))
             )
@@ -52,7 +52,7 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
@@ -72,7 +72,7 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists/dsfgsdsg',
+                'v1/bucketlists/dsfgsdsg',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
@@ -89,7 +89,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
             # Create a Bucket
             response = self.client.post(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 data=json.dumps(dict(name='Travel')),
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
@@ -100,7 +100,7 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertTrue(data['status'], 'success')
             self.assertTrue(data['name'], 'Travel')
             response = self.client.get(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -119,7 +119,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
 
             response = self.client.get(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -134,7 +134,7 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.delete(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
@@ -150,7 +150,7 @@ class TestBucketBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.delete(
-                '/bucketlists/dsfgsdsg',
+                'v1/bucketlists/dsfgsdsg',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
             )
             data = json.loads(response.data.decode())
@@ -168,7 +168,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
             # Create a Bucket
             response = self.client.post(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 data=json.dumps(dict(name='Travel')),
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
@@ -180,7 +180,7 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertTrue(data['name'], 'Travel')
             # Update the bucket name
             res = self.client.put(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(name='Adventure')),
                 content_type='application/json'
@@ -202,7 +202,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
             # Update the bucket name
             res = self.client.put(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(name='Adventure')),
                 content_type='application/json'
@@ -223,7 +223,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
             # Update the bucket name
             res = self.client.put(
-                '/bucketlists/bucketid',
+                'v1/bucketlists/bucketid',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(name='Adventure')),
                 content_type='application/json'
@@ -242,7 +242,7 @@ class TestBucketBluePrint(BaseTestCase):
         with self.client:
             token = self.get_user_token()
             res = self.client.put(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(name='Adventure'))
             )
@@ -259,7 +259,7 @@ class TestBucketBluePrint(BaseTestCase):
         with self.client:
             token = self.get_user_token()
             res = self.client.put(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(name='')),
                 content_type='application/json'
@@ -278,7 +278,7 @@ class TestBucketBluePrint(BaseTestCase):
             # Get an auth token
             token = self.get_user_token()
             response = self.client.post(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 data=json.dumps(dict(name='Travel')),
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
@@ -290,7 +290,7 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertTrue(data['name'], 'Travel')
             # Delete the created Bucket
             res = self.client.delete(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(res.data.decode())
@@ -307,7 +307,7 @@ class TestBucketBluePrint(BaseTestCase):
         with self.client:
             token = self.get_user_token()
             res = self.client.put(
-                '/bucketlists/1',
+                'v1/bucketlists/1',
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json'
             )
@@ -327,7 +327,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
             self.create_buckets(token)
             response = self.client.get(
-                '/bucketlists/?q=T',
+                'v1/bucketlists/?q=T',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -336,7 +336,7 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertEqual(len(data['buckets']), 3)
             self.assertEqual(data['buckets'][0]['id'], 1)
             self.assertEqual(data['count'], 6)
-            self.assertEqual(data['next'], 'http://localhost/bucketlists/?q=T&page=2')
+            self.assertEqual(data['next'], 'http://localhost/v1/bucketlists/?q=T&page=2')
             self.assertEqual(data['previous'], None)
             self.assertEqual(response.status_code, 200)
 
@@ -351,7 +351,7 @@ class TestBucketBluePrint(BaseTestCase):
             token = self.get_user_token()
             self.create_buckets(token)
             response = self.client.get(
-                '/bucketlists/?q=T&page=2',
+                'v1/bucketlists/?q=T&page=2',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -361,7 +361,7 @@ class TestBucketBluePrint(BaseTestCase):
             self.assertEqual(data['buckets'][0]['id'], 4)
             self.assertEqual(data['count'], 6)
             self.assertEqual(data['next'], None)
-            self.assertEqual(data['previous'], 'http://localhost/bucketlists/?q=T&page=1')
+            self.assertEqual(data['previous'], 'http://localhost/v1/bucketlists/?q=T&page=1')
             self.assertEqual(response.status_code, 200)
 
 

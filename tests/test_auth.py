@@ -93,7 +93,7 @@ class TestAuthBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/auth/login',
+                'v1/auth/login',
                 content_type='application/javascript',
                 data=json.dumps(dict(email='example@gmail.com', password='123456')))
             data = json.loads(response.data.decode())
@@ -165,7 +165,7 @@ class TestAuthBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                'auth/logout',
+                'v1/auth/logout',
             )
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
@@ -179,7 +179,7 @@ class TestAuthBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                'auth/logout',
+                'v1/auth/logout',
                 headers=dict(Authorization='Bearersdfsdvfj.bvdfvbdfxcvxcxcv')
             )
             data = json.loads(response.data.decode())
@@ -216,7 +216,7 @@ class TestAuthBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 headers=dict(Authorization='Bearerfgghjkljkhjvhbjn')
             )
             data = json.loads(response.data.decode())
@@ -232,7 +232,7 @@ class TestAuthBluePrint(BaseTestCase):
         """
         with self.client:
             response = self.client.get(
-                '/bucketlists/'
+                'v1/bucketlists/'
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 401)
@@ -242,7 +242,7 @@ class TestAuthBluePrint(BaseTestCase):
     def test_token_required_method_invalid_authorization_token(self):
         with self.client:
             response = self.client.get(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 headers=dict(Authorization='Bearer fgghjkljkhjvhbjn.sdfsdgfgfg')
             )
             data = json.loads(response.data.decode())
@@ -263,7 +263,7 @@ class TestAuthBluePrint(BaseTestCase):
             self.logout_user(token)
             # Send a Get request to bucketlists endpoint
             response = self.client.get(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -280,7 +280,7 @@ class TestAuthBluePrint(BaseTestCase):
             time.sleep(self.app.config['AUTH_TOKEN_EXPIRATION_TIME_DURING_TESTS'])
             # Send a Get request to bucketlists endpoint
             response = self.client.get(
-                '/bucketlists/',
+                'v1/bucketlists/',
                 headers=dict(Authorization='Bearer ' + token)
             )
             data = json.loads(response.data.decode())
@@ -302,7 +302,7 @@ class TestAuthBluePrint(BaseTestCase):
         self.assertEqual(reg_response.status_code, 201)
         # Login the user
         login_response = self.client.post(
-            'auth/login',
+            'v1/auth/login',
             data=json.dumps(dict(email='john@gmail.com', password='123456')),
             content_type='application/json'
         )
@@ -321,7 +321,7 @@ class TestAuthBluePrint(BaseTestCase):
         :return:
         """
         logout_response = self.client.post(
-            'auth/logout',
+            'v1/auth/logout',
             headers=dict(Authorization='Bearer ' + token)
         )
         return logout_response
@@ -334,7 +334,7 @@ class TestAuthBluePrint(BaseTestCase):
         :return:
         """
         return self.client.post(
-            '/auth/register',
+            'v1/auth/register',
             content_type='application/javascript',
             data=json.dumps(dict(email=email, password=password)))
 
@@ -346,7 +346,7 @@ class TestAuthBluePrint(BaseTestCase):
         :return:
         """
         return self.client.post(
-            '/auth/login',
+            'v1/auth/login',
             content_type='application/json',
             data=json.dumps(dict(email=email, password=password)))
 
@@ -359,7 +359,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                'v1/auth/reset/password',
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json',
                 data=json.dumps(dict(oldPassword='123456', newPassword='098765',
@@ -378,7 +378,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                'v1/auth/reset/password',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(oldPassword='123456', newPassword='098765',
                                      passwordConfirmation='098765')))
@@ -396,7 +396,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                'v1/auth/reset/password',
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(oldPassword='13456', newPassword='098765',
@@ -415,7 +415,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                'v1/auth/reset/password',
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + token),
                 data=json.dumps(dict(oldPassword='123456', newPassword='098765')))
@@ -433,7 +433,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                'v1/auth/reset/password',
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json',
                 data=json.dumps(dict(oldPassword='123456', newPassword='098765',
@@ -453,7 +453,7 @@ class TestAuthBluePrint(BaseTestCase):
             login_data = self.register_and_login_in_user()
             token = login_data['auth_token']
             response = self.client.post(
-                '/auth/reset/password',
+                'v1/auth/reset/password',
                 headers=dict(Authorization='Bearer ' + token),
                 content_type='application/json',
                 data=json.dumps(dict(oldPassword='123456', newPassword='0987',
