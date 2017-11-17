@@ -45,7 +45,7 @@ of the application.
 ## Users
 
 ### User registration.
-Send a `POST` request to `auth/register` endpoint with the payload in
+Send a `POST` request to `v1/auth/register` endpoint with the payload in
 `Json`
 
 An example would be
@@ -92,7 +92,7 @@ response below is returned. With an auth token
 
 ### User Login
 The user is able to login by send sending a `POST` request to
-`auth/login` with the json payload below.
+`v1/auth/login` with the json payload below.
 ```
 {
   "email": "example@gmail.com",
@@ -193,14 +193,14 @@ Below is an example of a *get* request endpoint to get the users buckets.
 An auth token must be attached in the Authorization
 header. The results returned are paginated.
 ```
-/bucketlists
+v1/bucketlists
 ```
 
 ### Get a user bucket by Id
 You can also get a bucket by its id by using the
 this endpoint and replacing the bucket_id with an existing bucket Id.
 ```
-/bucketlists/<bucket_id>
+v1/bucketlists/<bucket_id>
 ```
 The following response will be returned.
 ```
@@ -219,7 +219,7 @@ The following response will be returned.
 You can also edit the bucket name by sending a `PUT` request to
 this endpoint with a Json payload having the name attribute
 ```
-/bucketlists/<bucket_id>
+v1/bucketlists/<bucket_id>
 ```
 
 Payload
@@ -233,7 +233,7 @@ Payload
 A bucket can also be deleted by sending a `Delete`
 request with the bucket Id as shown below.
 ```
-/bucketlists/<bucket_id>
+v1/bucketlists/<bucket_id>
 ```
 
 ## BucketItems
@@ -246,7 +246,7 @@ specifying the Bucket Id. The results returned
 paginated.
 
 ```
-/bucketlists/<bucket_id>/items
+v1/bucketlists/<bucket_id>/items
 ```
 
 ### Get an Item from the Bucket
@@ -254,7 +254,7 @@ You can also get an item from the Bucket by specifying
 the item Id and Bucket Id as shown in the endpoint
 below.
 ```
-/bucketlists/<bucket_id>/items/<item_id>
+v1/bucketlists/<bucket_id>/items/<item_id>
 ```
 
 ### Add item to bucket
@@ -262,7 +262,7 @@ Send a Json payload with the item name and/or
 description to this endpoint by specifying the
 Bucket Id.
 ```
-/bucketlists/<bucket_id>/items
+v1/bucketlists/<bucket_id>/items
 ```
 Example Json payload
 ```
@@ -278,7 +278,7 @@ with a Json payload with a name and/or description.
 Specifying the Bucket Id and Item Id as shown in the
 endpoint below.
 ```
-/bucketlists/<bucket_id>/items/<item_id>
+v1/bucketlists/<bucket_id>/items/<item_id>
 ```
 
 ### Delete an Item from the Bucket
@@ -286,7 +286,7 @@ To delete an item from a Bucket, send a `DELETE`
 request specifying a Bucket Id and Item Id as shown
 below:
 ```
-/bucketlists/<bucket_id>/items/<item_id>
+v1/bucketlists/<bucket_id>/items/<item_id>
 ```
 
 ## Generating dummy data
