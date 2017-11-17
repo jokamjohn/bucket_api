@@ -45,7 +45,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.post(
-                '/bucketlists/id/items/',
+                'v1/bucketlists/id/items/',
                 data=json.dumps(dict(name='Food')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -62,7 +62,7 @@ class TestBucketItem(BaseTestCase):
         """
         with self.client:
             response = self.client.put(
-                '/bucketlists/id/items/1/',
+                'v1/bucketlists/id/items/1/',
                 data=json.dumps(dict(name='Food')),
                 content_type='application/json',
                 headers=dict(Authorization='Bearer ' + self.get_user_token())
@@ -206,7 +206,7 @@ class TestBucketItem(BaseTestCase):
             self.assertEqual(data['items'][0]['bucketId'], 1)
             self.assertEqual(data['items'][0]['id'], 6)
             self.assertEqual(data['count'], 6)
-            self.assertEqual(data['next'], 'http://localhostv1/bucketlists/1/items/?q=f&page=2')
+            self.assertEqual(data['next'], 'http://localhost/v1/bucketlists/1/items/?q=f&page=2')
             self.assertEqual(data['previous'], None)
             self.assertEqual(response.status_code, 200)
 
@@ -232,7 +232,7 @@ class TestBucketItem(BaseTestCase):
             self.assertEqual(data['items'][0]['id'], 3)
             self.assertEqual(data['count'], 6)
             self.assertEqual(data['next'], None)
-            self.assertEqual(data['previous'], 'http://localhostv1/bucketlists/1/items/?q=f&page=1')
+            self.assertEqual(data['previous'], 'http://localhost/v1/bucketlists/1/items/?q=f&page=1')
             self.assertEqual(response.status_code, 200)
 
     def test_empty_item_list_is_returned_when_no_items_in_bucket(self):
